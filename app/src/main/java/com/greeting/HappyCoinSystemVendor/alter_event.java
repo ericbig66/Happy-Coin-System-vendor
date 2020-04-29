@@ -28,6 +28,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
 import java.sql.Statement;
 import java.sql.Types;
 
@@ -52,6 +53,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.attended;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
+import static com.greeting.HappyCoinSystemVendor.Login.entryIsRecent;
 
 public class alter_event extends AppCompatActivity {
 
@@ -60,6 +62,7 @@ public class alter_event extends AppCompatActivity {
 
     LinearLayout ll;
     ScrollView sv;
+    String SQL ;
     public static int cardCounter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,10 @@ public class alter_event extends AppCompatActivity {
         setContentView(R.layout.layout_alter_event);
         ll = findViewById(R.id.ll);
         sv = findViewById(R.id.sv);
-
+        if(entryIsRecent)
+            SQL = " and actDate> now()";
+        else
+            SQL = "";
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }
@@ -95,7 +101,7 @@ public class alter_event extends AppCompatActivity {
                     ResultSet rs= st.executeQuery("select vid from vendor where acc = '"+acc+"'");
                     rs.next();
                     String vid = rs.getString(1);
-                    rs = st.executeQuery("select * from activity");
+                    rs = st.executeQuery("select * from activity where HostId = "+vid+SQL);
 
                     while (rs.next()) {
                         if(vid.equals(rs.getString(2))){
@@ -171,7 +177,7 @@ public class alter_event extends AppCompatActivity {
         protected void onPostExecute (String result){
             try {
                 if (function == 0) {
-                    Log.v("test","hey "+result);
+//                    Log.v("test","hey "+result);
                     cardCounter = Integer.parseInt(result);
                     cardRenderer();
                 } else if (function == 1) {
@@ -183,7 +189,7 @@ public class alter_event extends AppCompatActivity {
                 }
                 function = -1;
             } catch (Exception e) {
-                Log.v("test", "錯誤: " + e.toString());
+//                Log.v("test", "錯誤: " + e.toString());
             }
 
         }
@@ -193,7 +199,7 @@ public class alter_event extends AppCompatActivity {
     //商品卡產生器
     public void cardRenderer() {
         for (int i = 0; i < Aname.size(); i++) {
-            Log.v("test", "render card " + i);
+//            Log.v("test", "render card " + i);
             add(i);
         }
     }
@@ -366,7 +372,7 @@ public class alter_event extends AppCompatActivity {
         frame.addView(picpri);
         frame.addView(proinf);
         ll.addView(frame);
-        Log.v("test", "card" + ID + "rendered");
+//        Log.v("test", "card" + ID + "rendered");
     }
 
     public static int DP(float dp) {
@@ -379,11 +385,11 @@ public class alter_event extends AppCompatActivity {
     public void identifier(String act, int ID, int quantity) {
         EventId = ID;
         if (act.equals("D")) {
-            Log.v("test", "您正在檢視第" + Aname.get(ID) + "的詳細資料");
-//            Intent intent = new Intent(alter_event.this, alter_eventDetail.class);
-//            startActivity(intent);
+//            Log.v("test", "您正在檢視第" + Aname.get(ID) + "的詳細資料");
+            Intent intent = new Intent(alter_event.this, event_detail.class);
+            startActivity(intent);
         } else if (act.equals("B")) {
-            Log.v("test", "您報名了==>" + Aname.get(ID));
+//            Log.v("test", "您報名了==>" + Aname.get(ID));
             function = 1;
             if(quantity>0) {
                 AddAmount = Aamount.get(EventId)+quantity;
@@ -422,6 +428,7 @@ public class alter_event extends AppCompatActivity {
     }
 
     public void onBackPressed() {
+        entryIsRecent = false ;
         Intent intent = new Intent(alter_event.this, Home.class);
         startActivity(intent);
         clear();
@@ -436,7 +443,7 @@ public class alter_event extends AppCompatActivity {
             Bitmap proimg = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             int w = proimg.getWidth();
             int h = proimg.getHeight();
-            Log.v("test", "pic" + ID + " original = " + w + "*" + h);
+//            Log.v("test", "pic" + ID + " original = " + w + "*" + h);
             int scale = 1;
             if (w > h && (w / DP(120)) > 1 || h == w && (w / DP(120)) > 1) {
                 scale = w / DP(120);
@@ -447,11 +454,11 @@ public class alter_event extends AppCompatActivity {
                 w = w / scale;
                 h = h / scale;
             }
-            Log.v("test", "pic" + ID + " resized = " + w + "*" + h);
+//            Log.v("test", "pic" + ID + " resized = " + w + "*" + h);
             proimg = Bitmap.createScaledBitmap(proimg, w, h, false);
             return proimg;
         } catch (Exception e) {
-            Log.v("test", "error = " + e.toString());
+//            Log.v("test", "error = " + e.toString());
             return null;
         }
     }

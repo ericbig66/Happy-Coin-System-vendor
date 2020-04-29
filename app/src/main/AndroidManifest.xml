@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".event_detail"></activity>
-        <activity android:name=".recent" />
         <activity android:name=".Diary" />
         <activity android:name=".alter_event" />
         <activity android:name=".add_activity" />

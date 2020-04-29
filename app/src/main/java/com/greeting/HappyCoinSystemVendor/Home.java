@@ -27,6 +27,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.rc;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 import static com.greeting.HappyCoinSystemVendor.Login.wcm;
+import static com.greeting.HappyCoinSystemVendor.Login.entryIsRecent;
 
 public class Home extends AppCompatActivity {
     TextView wmsg;
@@ -67,9 +68,10 @@ public class Home extends AppCompatActivity {
             case R.id.contact:
                 intent = new Intent(Home.this,suggest.class);
                 break;
-//            case R.id.recent:
-//                intent = new Intent(Home.this,RecentEvent.class);
-//                break;
+            case R.id.recent:
+                entryIsRecent = true;
+                intent = new Intent(Home.this,alter_event.class);
+                break;
         }
         startActivity(intent);
         finish();

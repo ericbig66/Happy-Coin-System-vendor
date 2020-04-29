@@ -30,7 +30,8 @@
         android:layout_weight="0"
         android:ems="10"
         android:hint="E-mail 或 帳號"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:text="acc" />
 
     <EditText
         android:id="@+id/pwd"
@@ -39,7 +40,8 @@
         android:layout_weight="0"
         android:ems="10"
         android:hint="密碼"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:text="code" />
 
     <LinearLayout
         android:layout_width="match_parent"
