@@ -43,9 +43,9 @@ public class Home extends AppCompatActivity {
             case R.id.getcoin:
                 intent = new Intent(Home.this, vender_qrcode.class);
                 break;
-//            case R.id.paycoin:
-//                intent = new Intent(Home.this, vender_send_redbag.class);
-//                break;
+            case R.id.paycoin:
+                intent = new Intent(Home.this, vender_send_redbag.class);
+                break;
 //            case R.id.diary:
 ////                intent = new Intent(Home.this, Diary.class);
 //                intent = new Intent(Home.this,NewDiary.class);

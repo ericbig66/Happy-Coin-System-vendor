@@ -98,13 +98,12 @@ public class alter_event extends AppCompatActivity {
                     //建立查詢
                     String result = "";
                     Statement st = con.createStatement();
-                    ResultSet rs= st.executeQuery("select vid from vendor where acc = '"+acc+"'");
-                    rs.next();
-                    String vid = rs.getString(1);
-                    rs = st.executeQuery("select * from activity where HostId = "+vid+SQL);
+//                    ResultSet rs= st.executeQuery("select vid from vendor where acc = '"+acc+"'");
+//                    rs.next();
+//                    String vid = rs.getString(1);
+                    ResultSet  rs = st.executeQuery("select a.* from activity a, vendor v where v.vid = a.id  and v.acc= '"+acc+"'"+SQL);
 
                     while (rs.next()) {
-                        if(vid.equals(rs.getString(2))){
                             Aid.add(rs.getString(1));
                             Avendor.add(rs.getString(2));
                             Aname.add(rs.getString(3));
@@ -119,19 +118,9 @@ public class alter_event extends AppCompatActivity {
                             Areward.add(rs.getInt(12));
                             AamountLeft.add(rs.getInt(13));
                             Adesc.add(rs.getString("actDesc"));
-
-                        }
-
                     }
-
                     attended.clear();
-//                    rs = st.executeQuery("select activity from attendlist where account = '" + acc + "'");//多餘
-//                    while (rs.next()) {//多餘
-//                        attended.add(rs.getString("activity")); //多餘;
-//                    }//多餘
-
                     return Aname.size() + "";//回傳結果給onPostExecute==>取得輸出變數(位置)
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     res = e.toString();
@@ -231,7 +220,6 @@ public class alter_event extends AppCompatActivity {
         //商品圖片
         ImageView propic = new ImageView(this);
         LinearLayout.LayoutParams propicp = new LinearLayout.LayoutParams(DP(120), DP(90));
-        //propic.setImageBitmap(Bitmap.createScaledBitmap(ConvertToBitmap(ID), 120, 90, false));
         propic.setImageBitmap(ConvertToBitmap(ID));
         propic.setScaleType(ImageView.ScaleType.CENTER_CROP);
         propic.setLayoutParams(propicp);
@@ -339,8 +327,6 @@ public class alter_event extends AppCompatActivity {
         buybtn.setLayoutParams(buybtnp);
         buybtn.setId(5 * ID + 4);
         buybtn.setOnClickListener(v -> {
-//            if(buybtn.getText().toString().equals("參加")){buybtn.setText("取消報名");}
-//            else{buybtn.setText("參加");}
             final int id = ID;
             if(amount_add.getText().toString().trim().isEmpty()){amount_add.setText("0");}
             closekeybord();
@@ -410,12 +396,13 @@ public class alter_event extends AppCompatActivity {
         AamountLeft.clear();
         Adesc.clear();
         Avendor.clear();
-//        Aendapp.clear();
-//        AactDate.clear();
-//        AactStart.clear();
-//        AactEnd.clear();
+        AactDate.clear();
+        AsignStart.clear();
+        AactEnd.clear();
         Actpic.clear();
         attended.clear();
+        Adeadline_date.clear();
+        AsignEnd.clear();
     }
 
     //隱藏鍵盤

@@ -71,7 +71,6 @@ public class Login extends AppCompatActivity {
     public static ArrayList<String> attended = new ArrayList<>();
     public static int  EventId=-1;
     public static boolean entryIsRecent = false;
-
     //測試用變數
     public static ArrayList<String> TMP = new ArrayList<>();
     //
