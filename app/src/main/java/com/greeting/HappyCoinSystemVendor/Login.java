@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity {
     public static ArrayList<Integer> AamountLeft = new ArrayList<>();
     public static ArrayList<String> Adesc = new ArrayList<>(); //資料庫無
     public static ArrayList<String> attended = new ArrayList<>();
-    public static int  EventId=-1;
+    public static int  EventId=0;
     public static boolean entryIsRecent = false;
     //測試用變數
     public static ArrayList<String> TMP = new ArrayList<>();
@@ -218,7 +218,7 @@ public class Login extends AppCompatActivity {
                 RCdata = result.split("zpek,");//profile rotate isn't available on both app and database side
                 //name==>account==>money==>profile
                 wcm = RCdata[0] + "您好，目前貴公司\n帳戶餘額為:$" + RCdata[2];
-                Log.v("test","WCM0= "+wcm);
+//                Log.v("test","WCM0= "+wcm);
                 pf = ConvertToBitmap(RCdata[3]);
 //                Log.v("test", wcm);
 //                data = result;
@@ -236,5 +236,8 @@ public class Login extends AppCompatActivity {
 //
 //            }
         }
+    }
+    public static void lv(String s){
+        Log.v("test",s);
     }
 }

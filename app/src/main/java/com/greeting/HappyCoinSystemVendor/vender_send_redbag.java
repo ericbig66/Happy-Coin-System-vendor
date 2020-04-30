@@ -38,6 +38,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.Aname;
 import static com.greeting.HappyCoinSystemVendor.Login.Areward;
 import static com.greeting.HappyCoinSystemVendor.Login.EventId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
+import static com.greeting.HappyCoinSystemVendor.Login.lv;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
@@ -62,7 +63,7 @@ public class vender_send_redbag extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_vender_send_redbag);
-
+        lv(EventId+"");
         pay = findViewById(R.id.pay);
         amount = findViewById(R.id.amount);
         qrCode = findViewById(R.id.qrCode);
@@ -93,8 +94,6 @@ public class vender_send_redbag extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == Aname.size()-1){
                     function=2;
-                    total=amount.getText().toString().trim().length()>0?Integer.parseInt(amount.getText().toString()):0;
-                    Log.v("test","total.length= "+amount.getText().toString().trim().length());
                     customInput.setVisibility(View.VISIBLE);
                     qrCode.setVisibility(View.GONE);
                 }
@@ -103,7 +102,8 @@ public class vender_send_redbag extends AppCompatActivity {
                     total=Areward.get(EventId);
                     customInput.setVisibility(View.GONE);
                     qrCode.setVisibility(View.VISIBLE);
-                    BarcodeEncoder encoder = new BarcodeEncoder();
+                    ConnectMySql connectMySql = new ConnectMySql();
+                    connectMySql.execute("");
 //                    Log.v("test",acc+"fu02l," + Aid.get(position));
                     try{
                         EventId=position;
@@ -125,9 +125,12 @@ public class vender_send_redbag extends AppCompatActivity {
     }
 
     public void getCode(View v) {
-
-        Log.v("test", acc+"cj/1l," +amount .getText().toString());
-        if(amount.getText().toString().trim().isEmpty() || Integer.parseInt(amount.getText().toString().trim())<1||total<1){Toast.makeText(vender_send_redbag.this,"請輸入紅包金額",Toast.LENGTH_LONG).show();}
+        total=amount.getText().toString().trim().length()>0?Integer.parseInt(amount.getText().toString()):0;
+        Log.v("test","total.length= "+amount.getText().toString().trim().length());
+//        Log.v("test", acc+"cj/1l," +amount .getText().toString());
+        if(amount.getText().toString().trim().isEmpty() || Integer.parseInt(amount.getText().toString().trim())<1||total<1){
+            Toast.makeText(vender_send_redbag.this,"請輸入紅包金額",Toast.LENGTH_LONG).show();
+        }
         else{
             ConnectMySql connectMySql = new ConnectMySql();
             connectMySql.execute("");
@@ -136,6 +139,7 @@ public class vender_send_redbag extends AppCompatActivity {
 
     }
 
+    int counter = 0 ;
     int function=0;
     //建立連接與查詢非同步作業
     private class ConnectMySql extends AsyncTask<String, Void, String> {
@@ -163,9 +167,14 @@ public class vender_send_redbag extends AppCompatActivity {
                         ResultSet rs = st.executeQuery("select id, actName,reward from activity, vendor where HostId = vendor.vid and acc = '" + acc + "' and Date(actDate) = CURDATE()");
                 Log.v("test","select id, actName,reward from activity, vendor where HostId = vendor.vid and acc = '"+ acc+"' and actDate = curDate()");
                         while (rs.next()) {
+                            counter++;
                             Aid.add(rs.getString(1));
+//                            Log.v("test","hihi = "+Aid.size()+"");
                             Aname.add(rs.getString(2));
+//                            Log.v("test","hihi1 = "+Aname.size()+"");
                             Areward.add(rs.getInt(3));
+//                            Log.v("test","hihi2 = "+Areward.size()+"");
+//                            lv("reward["+(counter-1)+""+"]= "+rs.getInt(3));
                         }
                         int actAmount = Aid.size();
                         Aname.add("紅包/人工補簽");
@@ -189,6 +198,7 @@ public class vender_send_redbag extends AppCompatActivity {
                         cstmt.setString(8,null);
                         cstmt.execute();
                         res = cstmt.getString(1);
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -199,7 +209,7 @@ public class vender_send_redbag extends AppCompatActivity {
         //查詢後的結果將回傳於此
         @Override
         protected void onPostExecute (String result){
-            Log.v("test",result);
+            Log.v("test",counter+"");
             if(function==0) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(vender_send_redbag.this, android.R.layout.simple_spinner_item, Aname);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
