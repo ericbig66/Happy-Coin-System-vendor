@@ -47,7 +47,7 @@ public class member_center extends AppCompatActivity {
     String data = "";
     //裝載轉換出的EditText中的文字
     String NAME=null, EM=null, PH=null, PWD = null, PWDHINT=null, CHKPWD=null, b64=null, OPWD=null, ADD=null, WEB=null;
-    Bitmap dataToConvert;
+    Bitmap dataToConvert = pf;
     //清除所有填寫的資料(會被重新填寫按鈕呼叫或註冊成功時會被呼叫)
     public void clear(){
         name.setText("");
@@ -66,7 +66,9 @@ public class member_center extends AppCompatActivity {
         WEB=null;
         opwd.setText("");
         b64="";
-//        opf=null;
+        opf=null;
+        dataToConvert=null;
+        Log.v("test","pf is null (clr)=" + (pf==null));
     }
 
     //隱藏鍵盤
@@ -203,8 +205,8 @@ public class member_center extends AppCompatActivity {
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            Toast.makeText(member_center.this,"註冊中...",Toast.LENGTH_SHORT).show();
-            Log.v("test","function = "+function);
+            Toast.makeText(member_center.this,"請稍後...",Toast.LENGTH_SHORT).show();
+            Log.v("test","function (pre) = "+function);
         }
 
         @Override
@@ -262,12 +264,13 @@ public class member_center extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Log.v("test","function = "+function);
+            Log.v("test","function (post) = "+function);
             Log.v("test", "error = "+result);
             if(result.equals("更新成功")){
                 Toast.makeText(member_center.this, result, Toast.LENGTH_SHORT).show();
                 pf = dataToConvert;
-//                onBackPressed();
+                Log.v("test","pf is null (ope)=" + (pf==null));
+                onBackPressed();
             }else if(function == 0){
 //                data = result;
 //                Log.v("test","data = "+result);
@@ -299,6 +302,7 @@ public class member_center extends AppCompatActivity {
 //        Toast.makeText(Register.this, "hi!",Toast.LENGTH_SHORT).show();
         if(requestCode == OPEN_PIC && RESULT_OK == resultCode){
             Uri imgdata = data.getData();
+            ((BitmapDrawable)profile.getDrawable()).getBitmap().recycle();
             profile.setImageURI(imgdata);
             profile.setVisibility(View.VISIBLE);
 //            rotate.setVisibility(View.VISIBLE);
@@ -334,6 +338,7 @@ public class member_center extends AppCompatActivity {
             b64 = s;
             if(dataToConvert != null){
                 pf = dataToConvert;
+                Log.v("test","pf is null (dtc)=" + (pf==null));
             }
         }
     }
@@ -346,6 +351,7 @@ public class member_center extends AppCompatActivity {
         b64 = pfs;
         profile.setImageBitmap(pf);
         opf=pf;
+        Log.v("test","pf is null (atf)=" + (pf==null));
 //        if(degree.toString().trim().isEmpty()){degree = 0f;}
 //        degree = Float.parseFloat(tmp[1]) - 90f;
 //        rotate();
@@ -355,6 +361,7 @@ public class member_center extends AppCompatActivity {
 
     public void onBackPressed(){
         clear();
+        Log.v("test","pf is null (obp)=" + (pf==null));
         Intent intent = new Intent(member_center.this, Home.class);
         startActivity(intent);
         finish();

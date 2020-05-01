@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#CBE8CA"
+    android:gravity="center"
     android:orientation="vertical"
-    tools:context=".Login"
-    android:background="#CBE8CA">
+    android:padding="15dp"
+    tools:context=".Login">
 
 
     <TextView
@@ -46,47 +48,52 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="登入"
-            android:textSize="15sp"
             android:layout_marginLeft="2.5dp"
             android:layout_marginRight="2.5dp"
             android:layout_marginBottom="5dp"
+            android:layout_weight="0"
             android:background="@drawable/rounded_button"
-            android:textColor="#FFFFFF"/>
+            android:text="登入"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="清除"
-            android:textSize="15sp"
             android:layout_marginLeft="2.5dp"
             android:layout_marginRight="2.5dp"
             android:layout_marginBottom="5dp"
+            android:layout_weight="0"
             android:background="@drawable/rounded_button"
-            android:textColor="#FFFFFF"/>
+            android:text="清除"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:text="加入會員"
-            android:textSize="15sp"
             android:layout_marginLeft="2.5dp"
             android:layout_marginRight="2.5dp"
             android:layout_marginBottom="5dp"
+            android:layout_weight="0"
             android:background="@drawable/rounded_button"
-            android:textColor="#FFFFFF"/>
+            android:text="加入會員"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/view12"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
 </LinearLayout>

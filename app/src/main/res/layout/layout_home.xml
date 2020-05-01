@@ -80,20 +80,18 @@
                 android:id="@+id/AddProd"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginLeft="2.5dp"
                 android:layout_marginRight="2.5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="0.5"
+                android:background="#2CBCA3"
                 android:onClick="execute"
                 android:text="新品上架"
+                android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 app:layout_column="0"
                 app:layout_columnWeight="0.5"
                 app:layout_row="0"
-                app:layout_rowWeight="0.25"
-                android:background="#2CBCA3"
-                android:textColor="#FFFFFF"
-                />
+                app:layout_rowWeight="0.25" />
 
             <Button
                 android:id="@+id/addAct"
@@ -187,16 +185,16 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginRight="2.5dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.49"
+                android:background="#2CBCA3"
                 android:onClick="execute"
                 android:text="日記簿\n&amp;簽到紀錄"
+                android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 app:layout_column="0"
                 app:layout_columnWeight="0.5"
                 app:layout_row="3"
-                app:layout_rowWeight="0.25"
-                android:background="#2CBCA3"
-                android:textColor="#FFFFFF"/>
+                app:layout_rowWeight="0.25" />
 
             <Button
                 android:id="@+id/alter_vendor"

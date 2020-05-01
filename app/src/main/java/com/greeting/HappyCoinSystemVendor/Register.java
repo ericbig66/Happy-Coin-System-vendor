@@ -63,7 +63,7 @@ public class Register extends AppCompatActivity {
         WEB="";
         b64="";
         profile.setVisibility(View.GONE);
-        rotate.setVisibility(View.GONE);
+//        rotate.setVisibility(View.GONE);
     }
     //切換回登入模式(被該按鈕呼叫)
     public void swlogin(){
@@ -139,7 +139,7 @@ public class Register extends AppCompatActivity {
 
         rotate = findViewById(R.id.rotate);
 
-        rotate.setOnClickListener(v -> rotate());
+//        rotate.setOnClickListener(v -> rotate());
 
         pic.setOnClickListener(v -> picOpen());
 
@@ -237,7 +237,7 @@ public class Register extends AppCompatActivity {
             Uri imgdata = data.getData();
             profile.setImageURI(imgdata);
             profile.setVisibility(View.VISIBLE);
-            rotate.setVisibility(View.VISIBLE);
+//            rotate.setVisibility(View.VISIBLE);
             dataToConvert = ((BitmapDrawable)profile.getDrawable()).getBitmap();
             ConvertToBase64 convertToBase64 = new ConvertToBase64();
             convertToBase64.execute("");

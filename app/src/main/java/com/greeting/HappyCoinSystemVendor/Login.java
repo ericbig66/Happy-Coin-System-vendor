@@ -223,7 +223,7 @@ public class Login extends AppCompatActivity {
 //                Log.v("test", wcm);
 //                data = result;
                 acc = account;
-                Toast.makeText(Login.this, "請稍後...", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Login.this, "請稍後...", Toast.LENGTH_SHORT).show();
                 swmenu();
             } else {
                 Log.v("test","does not contain separator");

@@ -3,6 +3,7 @@ package com.greeting.HappyCoinSystemVendor;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -72,6 +73,7 @@ public class Home extends AppCompatActivity {
                 intent = new Intent(Home.this,alter_event.class);
                 break;
         }
+        ((BitmapDrawable)profile.getDrawable()).getBitmap().recycle();
         startActivity(intent);
         finish();
     }
@@ -102,12 +104,12 @@ public class Home extends AppCompatActivity {
 //        String msg = intent.getStringExtra("msg");
 //        Log.v("test", "profile size = " + pf.getWidth()+"*"+pf.getHeight());
         String msg = wcm;
-        setContentView(R.layout.layout_home);
         wmsg = findViewById(R.id.msg);
 //        wmsg.setText(msg);
         Log.v("test","WCM= "+wcm);
         wmsg.setText(wcm);
         profile = findViewById(R.id.profile);
+        Log.v("test","i'm still good");
         try {
             profile.setImageBitmap(pf);
 //            profile.setRotation(pfr);

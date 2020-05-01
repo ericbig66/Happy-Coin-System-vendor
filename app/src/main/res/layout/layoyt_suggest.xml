@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#CBE8CA"
     android:orientation="vertical"
-    tools:context=".suggest"
-    android:background="#CBE8CA">
+    android:padding="15dp"
+    tools:context=".suggest">
 
     <TextView
         android:id="@+id/textView8"
@@ -41,8 +42,8 @@
         android:id="@+id/submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="送出"
-        android:textSize="18sp"
         android:background="@drawable/rounded_button"
-        android:textColor="#FFFFFF"/>
+        android:text="送出"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
 </LinearLayout>
