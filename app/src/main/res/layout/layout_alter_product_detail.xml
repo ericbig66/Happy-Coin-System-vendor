@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".alter_product_detail">
+    tools:context=".alter_product_detail"
+    android:background="#CBE8CA">
 
 
     <ImageView
@@ -43,7 +44,9 @@
                 android:layout_marginTop="10dp"
                 android:layout_weight="0"
                 android:text="修改商品圖片"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:background="@drawable/rounded_button"
+                android:textColor="#FFFFFF"/>
 
             <View
                 android:layout_width="fill_parent"
@@ -312,7 +315,9 @@
                     android:layout_width="142dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.8"
-                    android:text="確認" />
+                    android:text="確認"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="#FFFFFF"/>
             </LinearLayout>
 
         </LinearLayout>

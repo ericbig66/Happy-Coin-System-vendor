@@ -150,6 +150,7 @@ public class vender_send_redbag extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             Toast.makeText(vender_send_redbag.this, "請稍後...", Toast.LENGTH_SHORT).show();
+            lv("fn before = "+function);
         }
 
         //查詢執行動作(不可使用與UI相關的指令)
@@ -181,6 +182,7 @@ public class vender_send_redbag extends AppCompatActivity {
                         return Aname.size() + "";//回傳結果給onPostExecute==>取得輸出變數(位置)
                     }
                     else if(function>0){
+                        lv("送紅包");
                         CallableStatement cstmt = con.prepareCall("{? = call redenvelope_manager(?,?,?,?,?,?,?)}");
                         cstmt.registerOutParameter(1, Types.VARCHAR);
                         cstmt.setString(2,acc);
@@ -192,8 +194,8 @@ public class vender_send_redbag extends AppCompatActivity {
                             cstmt.setString(7, Aname.get(EventId) + "補簽到紅包");
                         }
                         else {
-                            cstmt.setInt(6, Areward.get(EventId));
-                            cstmt.setString(7, Aname.get(EventId) + "補簽到紅包");
+                            cstmt.setInt(6, total);
+                            cstmt.setString(7, "廠商紅包");
                         }
                         cstmt.setString(8,null);
                         cstmt.execute();
@@ -209,6 +211,7 @@ public class vender_send_redbag extends AppCompatActivity {
         //查詢後的結果將回傳於此
         @Override
         protected void onPostExecute (String result){
+            lv("error when generate code: "+ result);
             Log.v("test",counter+"");
             if(function==0) {
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(vender_send_redbag.this, android.R.layout.simple_spinner_item, Aname);
@@ -217,6 +220,7 @@ public class vender_send_redbag extends AppCompatActivity {
                 function++;
             }
             else {
+                lv("fn= "+function);
                 BarcodeEncoder encoder = new BarcodeEncoder();
                 Bitmap bit = null;
                 try {

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".alter_product">
+    tools:context=".alter_product"
+    android:background="#CBE8CA">
 
     <ImageView
         android:id="@+id/imageView7"

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".member_center">
+    tools:context=".member_center"
+    android:background="#CBE8CA">
     <ImageView
         android:id="@+id/imageView9"
         android:layout_width="match_parent"
@@ -290,12 +291,6 @@
                 android:gravity="top"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:text=" * "
-                    android:textColor="#FF0000" />
 
                 <Button
                     android:id="@+id/pic"
@@ -306,7 +301,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1"
-                    android:text="變更頭像" />
+                    android:text="變更頭像"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="#FFFFFF"/>
 
                 <Button
                     android:id="@+id/rotate"
@@ -317,6 +314,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0"
                     android:text="旋轉頭像"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="#FFFFFF"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -325,7 +324,9 @@
                 android:id="@+id/reg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="確定修改" />
+                android:text="確定修改"
+                android:background="@drawable/rounded_button"
+                android:textColor="#FFFFFF"/>
 
             <Button
                 android:id="@+id/clr"
@@ -333,7 +334,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
 
-                android:text="放棄修改" />
+                android:text="放棄修改"
+                android:background="@drawable/rounded_button"
+                android:textColor="#FFFFFF"/>
 
         </LinearLayout>
     </ScrollView>

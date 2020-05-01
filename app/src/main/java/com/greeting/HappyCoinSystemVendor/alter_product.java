@@ -298,7 +298,8 @@ public class alter_product extends AppCompatActivity {
         detailp.setMarginEnd(20);
         detail.setText("修改");
         detail.setTextSize(18f);
-//        detail.setBackgroundResource(R.drawable.rounded_button_pink);
+        detail.setBackgroundResource(R.drawable.rounded_button);
+        detail.setTextColor(Color.parseColor("#FFFFFF"));
         detail.setLayoutParams(detailp);
         detail.setId(5*ID+3);
         detail.setOnClickListener(v -> {
@@ -318,7 +319,8 @@ public class alter_product extends AppCompatActivity {
         );
         buybtn.setText("上架");
         buybtn.setTextSize(18f);
-//        buybtn.setBackgroundResource(R.drawable.rounded_button_pink);
+        buybtn.setBackgroundResource(R.drawable.rounded_button);
+        buybtn.setTextColor(Color.parseColor("#FFFFFF"));
         buybtn.setLayoutParams(buybtnp);
         buybtn.setId(5*ID+4);
         buybtn.setOnClickListener(v -> {

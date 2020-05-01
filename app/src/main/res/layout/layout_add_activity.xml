@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".add_activity">
+    tools:context=".add_activity"
+    android:background="#CBE8CA">
 
     <ImageView
         android:id="@+id/imageView3"
@@ -398,7 +399,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="上傳活動封面照片" />
+                android:text="上傳活動封面照片"
+                android:background="@drawable/rounded_button"
+                android:textColor="#FFFFFF"/>
 
             <EditText
                 android:id="@+id/ActDesc"
@@ -414,7 +417,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="新增活動" />
+                android:text="新增活動"
+                android:background="@drawable/rounded_button"
+                android:textColor="#FFFFFF"/>
 
         </LinearLayout>
     </ScrollView>
