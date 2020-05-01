@@ -55,6 +55,7 @@ public class SellDiary extends Fragment {
 //        TextView textView = new TextView(getActivity());
 //        textView.setText(R.string.hello_blank_fragment);
 //        return textView;
+        clear();
         chooser = view.findViewById(R.id.chooser);
         chooser.setVisibility(View.GONE);
         tradeData = view.findViewById(R.id.tradeData);
@@ -91,7 +92,7 @@ public class SellDiary extends Fragment {
                     //建立查詢
                     //String result = "對方帳戶\t交易\t金額\t餘額\n";
                     Statement st = con.createStatement();
-                    ResultSet rs = st.executeQuery("select s.productName, s.price, s.amount, s.date from sell_record s, vendor v where v.acc ='"+acc+"'");
+                    ResultSet rs = st.executeQuery("select s.productName, s.price, s.amount, s.date from sell_record s, vendor v where v.VID = s.VID and v.acc ='"+acc+"'");
                     //將查詢結果裝入陣列
                     while(rs.next()){
                         //result += rs.getString("paccount")+"\t"+rs.getString("state")+"\t$"+rs.getString("amount")+"\t$"+rs.getString("moneyLeft")+"\n";
@@ -146,4 +147,11 @@ public class SellDiary extends Fragment {
             }
         }
 
+        public void clear(){
+            pname.clear();
+            pprice.clear();
+            pamount.clear();
+            total.clear();
+            selldate.clear();
+        }
     }

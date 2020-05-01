@@ -28,7 +28,7 @@ import java.util.Date;
 public class Login extends AppCompatActivity {
 
     //sql connections settings
-    public static final String url = "jdbc:mysql://218.161.48.27:3360/happycoin?noAccessToProcedureBodies=true";
+    public static final String url = "jdbc:mysql://218.161.48.27:3360/happycoin?noAccessToProcedureBodies=true&useUnicode=yes&characterEncoding=UTF-8";
     public static final String user = "currency";
     public static final String pass = "SEclassUmDb@outside";
 

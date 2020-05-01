@@ -280,8 +280,8 @@
 
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 android:visibility="gone"
                 app:civ_border_color="#2CBCA3"
                 app:civ_border_width="4dp"
@@ -323,7 +323,9 @@
                     android:layout_marginLeft="5dp"
                     android:layout_weight="0"
                     android:text="旋轉頭像"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="#FFFFFF"/>
 
             </LinearLayout>
 

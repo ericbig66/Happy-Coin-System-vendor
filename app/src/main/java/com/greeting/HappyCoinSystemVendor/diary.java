@@ -1,5 +1,6 @@
 package com.greeting.HappyCoinSystemVendor;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,5 +36,13 @@ public class diary extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(diary.this, Home.class);
+        startActivity(intent);
+        finish();
     }
 }

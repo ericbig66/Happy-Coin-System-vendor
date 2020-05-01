@@ -181,6 +181,7 @@ public class EventAttendList extends Fragment {
         Mail.clear();
         Name.clear();
         Sign.clear();
+        catagory.clear();
     }
 
 }
