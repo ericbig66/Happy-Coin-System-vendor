@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class SellDiary extends Fragment {
 
     TextView dt;
     TableLayout tradeData;
-
+    Spinner chooser;
     public SellDiary() {
         // Required empty public constructor
     }
@@ -54,6 +55,8 @@ public class SellDiary extends Fragment {
 //        TextView textView = new TextView(getActivity());
 //        textView.setText(R.string.hello_blank_fragment);
 //        return textView;
+        chooser = view.findViewById(R.id.chooser);
+        chooser.setVisibility(View.GONE);
         tradeData = view.findViewById(R.id.tradeData);
         pname.add("品名　　");
         pprice.add("單價　　");

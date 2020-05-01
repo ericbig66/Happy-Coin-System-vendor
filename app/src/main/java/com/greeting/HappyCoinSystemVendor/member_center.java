@@ -65,7 +65,8 @@ public class member_center extends AppCompatActivity {
         ADD=null;
         WEB=null;
         opwd.setText("");
-
+        b64="";
+//        opf=null;
     }
 
     //隱藏鍵盤
@@ -130,6 +131,7 @@ public class member_center extends AppCompatActivity {
         OPWD = OPWD.trim().length() > 0 ?OPWD:null;
     }
 
+    Bitmap opf = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,11 +180,16 @@ public class member_center extends AppCompatActivity {
             verify();
         });
 
-        clr.setOnClickListener(v -> onBackPressed());
+        clr.setOnClickListener(v -> {
+            profile.setImageBitmap(opf);
+            pf=opf;
+            onBackPressed();
+        });
 
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }
+
 
 //    Float degree = 0f;
 //    public void rotate(){
@@ -203,8 +210,6 @@ public class member_center extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             try{
-
-
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass);
                 Statement st = con.createStatement();
@@ -340,6 +345,7 @@ public class member_center extends AppCompatActivity {
 //        phone.setText(tmp[0]);
         b64 = pfs;
         profile.setImageBitmap(pf);
+        opf=pf;
 //        if(degree.toString().trim().isEmpty()){degree = 0f;}
 //        degree = Float.parseFloat(tmp[1]) - 90f;
 //        rotate();
@@ -348,9 +354,9 @@ public class member_center extends AppCompatActivity {
     }
 
     public void onBackPressed(){
+        clear();
         Intent intent = new Intent(member_center.this, Home.class);
         startActivity(intent);
-        clear();
         finish();
     }
     }

@@ -37,10 +37,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0:
                 return SellDiary.newInstance();
-//            case 1:
-//                return RedEnvelopeDiary.newInstance();
-//            case 2:
-//                return EventAttendList.newInstance();
+            case 1:
+                return RedEnvelopeDiary.newInstance();
+            case 2:
+                return EventAttendList.newInstance();
             default:
                 Log.v("test","Error while loading fragment");
                 return null;
@@ -56,6 +56,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 1;
+        return 3;
     }
 }
