@@ -87,7 +87,7 @@ public class Home extends AppCompatActivity {
             acc ="";
             Intent intent = new Intent(Home.this, Login.class);
             startActivity(intent);
-            pf = null;
+//            pf = null;
             rc = 0;
             finish();
         }

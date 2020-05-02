@@ -160,8 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="產品的資訊"
-                    android:inputType="number" />
+                    android:hint="產品的資訊" />
             </LinearLayout>
 
             <View

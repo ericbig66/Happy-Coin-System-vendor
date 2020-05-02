@@ -43,6 +43,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.ReleseQuantity;
 import static com.greeting.HappyCoinSystemVendor.Login.SellId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.pf;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
@@ -371,6 +372,7 @@ public class alter_product extends AppCompatActivity {
             SellId=ID;
             Intent intent = new Intent(alter_product.this,alter_product_detail.class);
             startActivity(intent);
+            finish();
         }else if(act.equals("R")){
             //Log.v("test","您上架了"+quantity+"個"+Pname.get(ID));
             function = 1;
@@ -404,9 +406,12 @@ public class alter_product extends AppCompatActivity {
     }
 
     public void onBackPressed(){
+
+        Log.v("test","excuse me");
         Intent intent = new Intent(alter_product.this, Home.class);
         startActivity(intent);
         clear();
+        Log.v("test","pf is null (clr)=" + (pf==null));
         finish();
     }
 

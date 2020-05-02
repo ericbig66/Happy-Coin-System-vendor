@@ -43,6 +43,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.ReleseQuantity;
 import static com.greeting.HappyCoinSystemVendor.Login.SellId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.pf;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
@@ -98,6 +99,7 @@ public class  alter_product_detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_alter_product_detail);
+        Log.v("test","pf is null (0)=" + (pf==null));
         merPic = findViewById(R.id.merPic);
         merPic.setImageBitmap(ConvertToBitmap(SellId));
 
@@ -145,6 +147,7 @@ public class  alter_product_detail extends AppCompatActivity {
         Intent intent = new Intent(alter_product_detail.this,alter_product.class);
         startActivity(intent);
         clear();
+        Log.v("test","pf is null (clr)=" + (pf==null));
         finish();
     }
 
@@ -282,7 +285,9 @@ public class  alter_product_detail extends AppCompatActivity {
         //查詢後的結果將回傳於此
         @Override
         protected void onPostExecute(String result) {
+//            Log.v("test","hello?");
             try{
+//                Log.v("test","excuse me");
                 Toast.makeText(alter_product_detail.this, result, Toast.LENGTH_SHORT).show();
                 if(result.contains("成功")){
                     onBackPressed();
