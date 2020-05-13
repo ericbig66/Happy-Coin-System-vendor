@@ -2,6 +2,7 @@ package com.greeting.HappyCoinSystemVendor;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.text.method.SingleLineTransformationMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,81 +28,77 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Login extends AppCompatActivity {
-
-    //sql connections settings
+    //資料庫連線資料
     public static final String url = "jdbc:mysql://218.161.48.27:3360/happycoin?noAccessToProcedureBodies=true&useUnicode=yes&characterEncoding=UTF-8";
     public static final String user = "currency";
     public static final String pass = "SEclassUmDb@outside";
 
-    //shared variable
-    public static String[] RCdata;//data received from database
-    public static String wcm;//welcome message
-    public static String pfs;//profile String
-    public static Bitmap pf;//profile picture
-    public static float pfr;//profile rotation
-    public static String acc;//vendor account
-    public static String vendorName;
-    //寄放區
+    //通用變數
+    public static String[] RCdata;  //裝載由資料庫回傳之資料
+    public static String wcm;       //歡迎訊息
+    public static String pfs;       //頭像(Base64)
+    public static Bitmap pf;        //頭像(點陣圖)
+    public static float pfr;        //頭像角度
+    public static String acc;       //帳號
+    public static String vendorName;//名字
 
-    //Alter product
-    public static ArrayList<String> PID = new ArrayList<>();
-    public static ArrayList<String> Pname = new ArrayList<>();
-    public static ArrayList<Integer> Pprice = new ArrayList<>();
-    public static ArrayList<Integer> Pamount = new ArrayList<>();
-    public static ArrayList<String> PIMG = new ArrayList<>();
-    public static ArrayList<String> Pproduct_description = new ArrayList<>();
-    public static ArrayList<Integer> Psafe_product = new ArrayList<>();
+    //跨區存取變數
+    //Alter product(商品異動)
+    public static ArrayList<String> PID = new ArrayList<>();                  //商品代碼
+    public static ArrayList<String> Pname = new ArrayList<>();                //品名
+    public static ArrayList<Integer> Pprice = new ArrayList<>();              //單價
+    public static ArrayList<Integer> Pamount = new ArrayList<>();             //庫存量
+    public static ArrayList<String> PIMG = new ArrayList<>();                 //商品圖
+    public static ArrayList<String> Pproduct_description = new ArrayList<>(); //商品說明
+    public static ArrayList<Integer> Psafe_product = new ArrayList<>();       //安全庫存量
 
-    public static int SellId=-1, ReleseQuantity=0;
+    public static int SellId=-1, ReleseQuantity=0;//選取之商品為陣列中之第幾項, 上(下)架數量[下架之數量為負數]
 
-    //Alter event
-    public static ArrayList<String> Aid = new ArrayList<>();  //event
-    public static ArrayList<String> Avendor = new ArrayList<>();
-    public static ArrayList<String> Aname = new ArrayList<>();
-    public static ArrayList<String> Actpic = new ArrayList<>();
-    public static ArrayList<Date> AactDate = new ArrayList<>();
-    public static ArrayList<Date> AactEnd = new ArrayList<>();
-    public static ArrayList<Date> Astart_date = new ArrayList<>();
-    public static ArrayList<Date> Adeadline_date = new ArrayList<>();
-    public static ArrayList<Date> AsignStart = new ArrayList<>();
-    public static ArrayList<Date> AsignEnd = new ArrayList<>();
-    public static ArrayList<Integer> Aamount = new ArrayList<>();
-    public static ArrayList<Integer> Areward = new ArrayList<>();
-    public static ArrayList<Integer> AamountLeft = new ArrayList<>();
-    public static ArrayList<String> Adesc = new ArrayList<>(); //資料庫無
-    public static ArrayList<String> attended = new ArrayList<>();
-    public static int  EventId=0;
-    public static boolean entryIsRecent = false;
+    //Alter event(活動異動)
+    public static ArrayList<String> Aid = new ArrayList<>();          //活動代碼
+//    public static ArrayList<String> Avendor = new ArrayList<>();      //廠商代碼***檢查是否均已停用
+    public static ArrayList<String> Aname = new ArrayList<>();        //活動名稱
+    public static ArrayList<String> Actpic = new ArrayList<>();       //活動封面
+    public static ArrayList<Date> AactDate = new ArrayList<>();       //活動日期
+    public static ArrayList<Date> AactEnd = new ArrayList<>();        //活動結束
+    public static ArrayList<Date> Astart_date = new ArrayList<>();    //開放報名
+    public static ArrayList<Date> Adeadline_date = new ArrayList<>(); //報名截止
+    public static ArrayList<Date> AsignStart = new ArrayList<>();     //開始簽到
+    public static ArrayList<Date> AsignEnd = new ArrayList<>();       //簽到截止
+    public static ArrayList<Integer> Aamount = new ArrayList<>();     //名額限制
+    public static ArrayList<Integer> Areward = new ArrayList<>();     //獎勵金額
+    public static ArrayList<Integer> AamountLeft = new ArrayList<>(); //剩餘人數
+    public static ArrayList<String> Adesc = new ArrayList<>();        //活動說明
+//    public static ArrayList<String> attended = new ArrayList<>();     //已報名活動***檢查是否均已停用
+    public static int  EventId=0;//選取之活動為陣列中之第幾項
+    public static boolean entryIsRecent = false;//是否由近期活動進入活動異動區域
     //測試用變數
-    public static ArrayList<String> TMP = new ArrayList<>();
-    //
+//    public static ArrayList<String> TMP = new ArrayList<>();
 
-    //basic element
-    Button login, clear, register;
-    TextView ErrMsg;
-    EditText myacc, pwd;
-    String account, password, data;
-    public static int rc = 0;
 
-    public static final String ver = "0.0.1";
-
-    public void swreg() {  //切換註冊頁面
+    //登入頁面基本元素
+    Button login, clear, register;//登入、清除、註冊 按鈕
+    TextView ErrMsg;//錯誤訊息區
+    EditText myacc, pwd;//帳號、密碼 輸入框
+    String account, password;//擷取輸入框之帳號、密碼 專用變數(避免遭造中途竄改)
+    public static int rc = 0;//重新繪製次數(避免出現版面異常)
+    public static final String ver = "0.0.1";//版本號***此功能需檢查是否可用
+    //切換到註冊頁面
+    public void swreg() {
         Intent intent = new Intent(this, Register.class);
         startActivity(intent);
     }
-
-    public void swmenu() {   //切換到主選單
+    //切換到到主選單
+    public void swmenu() {
         Intent intent = new Intent(this, Home.class);
-//        wcm = data;
         startActivity(intent);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login);
-        //set basic element
+        //定義區
         login = findViewById(R.id.login);//登入
         clear = findViewById(R.id.clear);//清除
         register = findViewById(R.id.register);//切換到註冊頁面
@@ -113,16 +111,16 @@ public class Login extends AppCompatActivity {
 
         //登入紐動作
         login.setOnClickListener(v -> {
-            account = myacc.getText().toString();
-            password = pwd.getText().toString();
+            account = myacc.getText().toString();//擷取帳號輸入框文字
+            password = pwd.getText().toString(); //擷取密碼輸入框文字
 //                dtv.setText("call login(@fname, "+account+", "+password+"); select @fname;");
+            //檢測空白，出現空牌將會提示錯誤，否則繼續登入步驟
             if (account.trim().isEmpty() || password.trim().isEmpty()) {
-                Toast.makeText(Login.this, "請輸入帳號密碼以登入!", Toast.LENGTH_SHORT).show();
+                popup(getApplicationContext(),"請輸入帳號密碼以登入!");
             } else {
                 SignIn signin = new SignIn();
                 signin.execute();
             }
-
         });
 
         //清除紐動作
@@ -140,70 +138,33 @@ public class Login extends AppCompatActivity {
              */
     }
 
-    //public function
-    //base64 byte array to bitmap converter
-    public static Bitmap ConvertToBitmap(String b64) {
-        try {
-            byte[] imageBytes = Base64.decode(b64, Base64.DEFAULT);
-            return (BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length));
-        } catch (Exception e) {
-//            Log.v("test", "error = " + e.toString());
-        }
-        return null;
-    }
-
-
-    //private function
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    //toast popup
-    public static void popup(Context context, String content) {
-        Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
-    }
-
-    //建立連接與查詢非同步作業
+    //連線至資料庫登入
     private class SignIn extends AsyncTask<Void, Void, String> {
         String res = "";//錯誤信息儲存變數
-
-        //開始執行動作
         @Override
+        //登入前請使用者稍待
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(Login.this, "請稍後...", Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
 
-        //查詢執行動作(不可使用與UI相關的指令)
+        //登入
         @Override
         protected String doInBackground(Void... voids) {
             try {
                 //連接資料庫
                 Class.forName("com.mysql.jdbc.Driver");
-//
                 Connection con = DriverManager.getConnection(url, user, pass);
                 //建立查詢
-                String result = "";
-
-
                 CallableStatement cstmt = con.prepareCall("{? = call vlogin(?,?,?)}");
                 cstmt.registerOutParameter(1, Types.VARCHAR);//設定輸出變數(參數位置,參數型別)
                 cstmt.setString(2, account);
                 cstmt.setString(3, password);
-                cstmt.setString(4, "N/A");
+                cstmt.setString(4, "N/A");//此為IP***目前開發中
                 cstmt.executeUpdate();
                 res = cstmt.getString(1);
-//                pfs = cstmt.getString(5);
-//                pfr = cstmt.getFloat(6);
-//                ConvertToBitmap();
                 return res;
             } catch (Exception e) {
-//                res = result;
                 e.printStackTrace();
                 res = e.toString();
 //                Log.v("test", res);
@@ -214,29 +175,50 @@ public class Login extends AppCompatActivity {
         //查詢後的結果將回傳於此
         @Override
         protected void onPostExecute(String result) {
-            if (result.contains("zpek,")) {
-                RCdata = result.split("zpek,");//profile rotate isn't available on both app and database side
+            //將從資料庫得到的資料分割進陣列
+            if (result.contains("zpek,")) {//以"zpek,"作為分割符號，存在時分割進陣列
+                RCdata = result.split("zpek,");//頭像旋轉功能尚未開發[DB]***
                 //name==>account==>money==>profile
-                wcm = RCdata[0] + "您好，目前貴公司\n帳戶餘額為:$" + RCdata[2];
+                wcm = RCdata[0] + "您好，目前貴公司\n帳戶餘額為:$" + RCdata[2];//設定歡迎訊息
 //                Log.v("test","WCM0= "+wcm);
-                pf = ConvertToBitmap(RCdata[3]);
+                pf = ConvertToBitmap(RCdata[3]);//將頭像字串轉換為圖片
 //                Log.v("test", wcm);
-//                data = result;
-                acc = account;
-//                Toast.makeText(Login.this, "請稍後...", Toast.LENGTH_SHORT).show();
-                swmenu();
-            } else {
+                acc = account;//將帳號資料保留以供其他頁面使用
+                swmenu();//切換到主選單
+            } else {//否則秀出錯誤訊息
                 Log.v("test","does not contain separator");
                 popup(getApplicationContext(), result);
             }
-//            if (result.equals("遊客您好!\n目前您尚有$null")) {
-//                result = "遊客您好!\n如出售物品請先註冊帳號\n謝謝您的合作!";
-//                ErrMsg.setText(result);//設定結果顯示
-//            } else {
-//
-//            }
         }
     }
+
+    //通用函式
+    //base64轉換為點陣圖
+    public static Bitmap ConvertToBitmap(String b64) {
+        try {
+            byte[] imageBytes = Base64.decode(b64, Base64.DEFAULT);
+            return (BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length));//回傳圖片
+        } catch (Exception e) {
+//            Log.v("test", "error = " + e.toString());
+        }
+        return null;
+    }
+
+    //隱藏鍵盤
+    public static void hideKB(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    //Toast訊息提示的簡化版==>popup(getApplicationContext(),"訊息");
+    public static void popup(Context context, String content) {
+        Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
+    }
+
+    //Log.v簡化版==>lv("訊息");
     public static void lv(String s){
         Log.v("test",s);
     }

@@ -46,10 +46,10 @@ import static com.greeting.HappyCoinSystemVendor.Login.Areward;
 import static com.greeting.HappyCoinSystemVendor.Login.AsignEnd;
 import static com.greeting.HappyCoinSystemVendor.Login.AsignStart;
 import static com.greeting.HappyCoinSystemVendor.Login.Astart_date;
-import static com.greeting.HappyCoinSystemVendor.Login.Avendor;
+
 import static com.greeting.HappyCoinSystemVendor.Login.EventId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
-import static com.greeting.HappyCoinSystemVendor.Login.attended;
+
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
@@ -105,7 +105,7 @@ public class alter_event extends AppCompatActivity {
 
                     while (rs.next()) {
                             Aid.add(rs.getString(1));
-                            Avendor.add(rs.getString(2));
+//                            Avendor.add(rs.getString(2));
                             Aname.add(rs.getString(3));
                             Actpic.add(rs.getString(4));
                             AactDate.add(rs.getDate(5));
@@ -119,7 +119,7 @@ public class alter_event extends AppCompatActivity {
                             AamountLeft.add(rs.getInt(13));
                             Adesc.add(rs.getString("actDesc"));
                     }
-                    attended.clear();
+//                    attended.clear();
                     return Aname.size() + "";//回傳結果給onPostExecute==>取得輸出變數(位置)
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -397,12 +397,12 @@ public class alter_event extends AppCompatActivity {
         Aamount.clear();
         AamountLeft.clear();
         Adesc.clear();
-        Avendor.clear();
+//        Avendor.clear();
         AactDate.clear();
         AsignStart.clear();
         AactEnd.clear();
         Actpic.clear();
-        attended.clear();
+//        attended.clear();
         Adeadline_date.clear();
         AsignEnd.clear();
     }

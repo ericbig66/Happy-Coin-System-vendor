@@ -407,7 +407,7 @@ public class alter_product extends AppCompatActivity {
 
     public void onBackPressed(){
 
-        Log.v("test","excuse me");
+        Log.v("test","excuse me------------------------------------------------");
         Intent intent = new Intent(alter_product.this, Home.class);
         startActivity(intent);
         clear();

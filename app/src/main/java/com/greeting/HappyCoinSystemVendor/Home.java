@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Timer;
 
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
+import static com.greeting.HappyCoinSystemVendor.Login.lv;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.pf;
 import static com.greeting.HappyCoinSystemVendor.Login.pfr;
@@ -73,14 +74,19 @@ public class Home extends AppCompatActivity {
                 intent = new Intent(Home.this,alter_event.class);
                 break;
         }
-        ((BitmapDrawable)profile.getDrawable()).getBitmap().recycle();
-        startActivity(intent);
-        finish();
+        try {
+            lv("before clean");
+//            ((BitmapDrawable)profile.getDrawable()).getBitmap().recycle();
+            lv("after clean");
+            startActivity(intent);
+            finish();
+        }catch (Exception e){lv(e.toString());}
+
     }
     public void onBackPressed(){
         obp++;
         Timer timer = new Timer(true);
-
+        lv("obp = "+obp);
 
         if(obp>=2){
             wcm ="";
@@ -111,13 +117,15 @@ public class Home extends AppCompatActivity {
         profile = findViewById(R.id.profile);
         Log.v("test","i'm still good");
         try {
+            //----
+            lv("profile is null (home)= "+ (pf==null));
             profile.setImageBitmap(pf);
 //            profile.setRotation(pfr);
 //            Log.v("test", "profile size = " + pf.getWidth()+"*"+pf.getHeight());
         }catch (Exception e){
 //            Log.v("test","profile error = "+e.toString());
         }
-
+        lv("after setting pf");
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }

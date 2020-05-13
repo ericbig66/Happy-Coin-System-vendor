@@ -38,6 +38,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.Aname;
 import static com.greeting.HappyCoinSystemVendor.Login.Areward;
 import static com.greeting.HappyCoinSystemVendor.Login.EventId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
+import static com.greeting.HappyCoinSystemVendor.Login.hideKB;
 import static com.greeting.HappyCoinSystemVendor.Login.lv;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
@@ -125,6 +126,7 @@ public class vender_send_redbag extends AppCompatActivity {
     }
 
     public void getCode(View v) {
+        hideKB(this);
         total=amount.getText().toString().trim().length()>0?Integer.parseInt(amount.getText().toString()):0;
         Log.v("test","total.length= "+amount.getText().toString().trim().length());
 //        Log.v("test", acc+"cj/1l," +amount .getText().toString());
