@@ -26,26 +26,28 @@ import java.sql.Types;
 import static com.greeting.HappyCoinSystemVendor.Home.vname;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
+import static com.greeting.HappyCoinSystemVendor.Login.popupL;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 public class newProduct extends AppCompatActivity {
-
+    //產品代碼、品名、單價、庫存、安全庫存、產品說明 輸入框
     EditText pid, pname, Pprice, stock,safe_stock,product_description;
-    ImageView propic;
-    Button loadpic, submit;
-
-    final int OPEN_PIC = 1021;
+    ImageView propic;//商品圖區
+    Button loadpic, submit;//上傳圖片、送出按鈕
+    final int OPEN_PIC = 1021;//開啟頭像時須使用的程式執行序號
+    //擷取輸入框==>產品代號、品名、圖片base64碼、產品說明
     String PID = "", PNAME = "", b64 = "",PRODUCT_DESCRIPTION ="";
+    //擷取輸入框==>單價、庫存、安全庫存
     int PPRICE = 0, STOCK = 0, SAFE_STOCK = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_new_product);
-
         Log.v("test", "vname = " + vname);
-
+        //定義區
         pid = findViewById(R.id.pid);
         pname = findViewById(R.id.pname);
         Pprice = findViewById(R.id.Pprice);
@@ -53,14 +55,13 @@ public class newProduct extends AppCompatActivity {
         safe_stock = findViewById(R.id.safe_stock);
         product_description = findViewById(R.id.product_description);
         propic = findViewById(R.id.propic);
-
         loadpic = findViewById(R.id.loadpic);
 //        rotate = findViewById(R.id.rotate);
         submit = findViewById(R.id.submit);
-
-        loadpic.setOnClickListener(v -> picOpen());
+        //設定區
+        loadpic.setOnClickListener(v -> picOpen());//上傳圖片
 //        rotate.setOnClickListener(v -> rotate());
-        submit.setOnClickListener(v -> verify());
+        submit.setOnClickListener(v -> verify());//驗證輸入資料
     }
 
     //開啟頭像
@@ -71,30 +72,33 @@ public class newProduct extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "請選擇商品照片"), OPEN_PIC);
     }
 
-    Bitmap dataToConvert;
+    Bitmap dataToConvert;//待轉換為base64的圖片
 
     @Override
+    //接收到圖片
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 //        Toast.makeText(Register.this, "hi!",Toast.LENGTH_SHORT).show();
+        //圖片正確載入
         if (requestCode == OPEN_PIC && RESULT_OK == resultCode) {
             Uri imgdata = data.getData();
-            propic.setImageURI(imgdata);
+            propic.setImageURI(imgdata);//設定頭像
             propic.setVisibility(View.VISIBLE);
 //            rotate.setVisibility(View.VISIBLE);
-            dataToConvert = ((BitmapDrawable) propic.getDrawable()).getBitmap();
+            dataToConvert = ((BitmapDrawable) propic.getDrawable()).getBitmap();//擷取圖片供轉換
 //            rotate.setVisibility(View.VISIBLE);
             propic.setVisibility(View.VISIBLE);
+            //將圖片轉換成base64格式以儲存置資料庫
             ConvertToBase64 convertToBase64 = new ConvertToBase64();
             convertToBase64.execute("");
         }
     }
-
+    //將圖片轉換成base64格式
     private class ConvertToBase64 extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(newProduct.this, "請稍後...", Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
 
         @Override
@@ -108,21 +112,22 @@ public class newProduct extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-
             super.onPostExecute(s);
-            b64 = s;
-
+            b64 = s;//將轉換後的資料放入專用變數內
         }
     }
-
+    //檢查輸入的資料是否符合規範
     public void verify() {
+        //擷取資料並去除空字串
         PID = pid.getText().toString().trim();
         PNAME = pname.getText().toString().trim();
         PRODUCT_DESCRIPTION = product_description.getText().toString().trim();
         PPRICE = Integer.parseInt((Pprice.getText().toString().trim()).isEmpty()?"-1":(Pprice.getText().toString().trim()));
         STOCK = Integer.parseInt((stock.getText().toString().trim()).isEmpty()?"-1":(stock.getText().toString().trim()));
         SAFE_STOCK = Integer.parseInt((safe_stock.getText().toString().trim()).isEmpty()?"-1":(safe_stock.getText().toString().trim()));
-        String error = "";
+
+        //錯誤訊息疊加
+        String error = "";//錯誤訊息
         error = PID.isEmpty() ? error + "商品編號, " : error;
         error = PNAME.isEmpty() ? error + "商品名稱, " : error;
         error = PRODUCT_DESCRIPTION.isEmpty() ? error +"產品說明" :error;
@@ -135,24 +140,21 @@ public class newProduct extends AppCompatActivity {
             ConnectMySql connectMySql = new ConnectMySql();
             connectMySql.execute("");
         } else {
-            Toast.makeText(newProduct.this, error, Toast.LENGTH_LONG).show();
+            popupL(getApplicationContext(), error);
         }
     }
-
+    //新增商品置資料庫
     private class ConnectMySql extends AsyncTask<String, Void, String> {
-        String res = "";
-
+        String res = "";//裝載結果用
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(newProduct.this, "新增中...", Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"新增中...");
         }
-
+        //新增商品
         @Override
         protected String doInBackground(String... strings) {
             try {
-
-
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass);
                 String result = "";
@@ -168,26 +170,24 @@ public class newProduct extends AppCompatActivity {
                 cstmt.setString(9, PRODUCT_DESCRIPTION);
                 cstmt.executeUpdate();
                 return cstmt.getString( 1);
-
             } catch (Exception e) {
                 e.printStackTrace();
                 res = e.toString();
-
             }
             return res;
         }
-
+        //新增後
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(newProduct.this, result, Toast.LENGTH_LONG).show();
-            if (result.contains("成功")) {
+            popupL(getApplicationContext(),result);//顯示結果
+            if (result.contains("成功")) {//若成功則自動返回首頁
                 onBackPressed();
             }
         }
 
 
     }
-
+    //返回首頁
     public void onBackPressed() {
         Intent intent = new Intent(newProduct.this, Home.class);
         startActivity(intent);

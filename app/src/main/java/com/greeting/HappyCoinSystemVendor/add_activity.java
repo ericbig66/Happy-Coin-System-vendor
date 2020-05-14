@@ -34,13 +34,14 @@ import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 public class add_activity extends AppCompatActivity {
+    //輸入框==>活動名稱,回饋金額,人數限制,活動說明,活動年,        活動月,         活動日,       開始報名年,      開始報名月,       開始報名日,      報名截止年,         報名截止月,           報名截止日,        簽到截止分,簽到截止時,開放簽到分,     開放簽到時
     EditText actName, reward, people, ActDesc,act_date_year,act_date_month,act_date_day,start_date_year,start_date_month,start_date_day,deadline_date_year,deadline_date_month,deadline_date_day,sign_min,sign_hour,start_sign_min,start_sign_hour;
-    ImageView actPic;
-    Button uploadPic, AddAct;
-
-    final int OPEN_PIC = 1021;
+    ImageView actPic;//活動封面圖放置處
+    Button uploadPic, AddAct;//上傳圖片鈕、新增活動鈕
+    final int OPEN_PIC = 1021;//開啟頭像時須使用的程式執行序號
+    //擷取資料 活動圖檔,活動名稱,活動說明, 開始報名時間,   報名截止時間,     開始簽到時間, 簽到截止時間,活動日期
     String b64 = "", ACTN="", DESC="", start_sign="",act_deadline="", fu02l4="", end_sign="",act_date;
-    int RW=0, PP=0;
+    int RW=0, PP=0;//活動獎勵、人數限制
 
     //系統時間及格式設定
     Date curDate = new Date(System.currentTimeMillis()) ;//取得系統時間
@@ -57,6 +58,7 @@ public class add_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_add_activity);
+        //定義區
         actName = findViewById(R.id.actName);
         reward = findViewById(R.id.reward);
         people = findViewById(R.id.people);
@@ -77,13 +79,14 @@ public class add_activity extends AppCompatActivity {
         start_sign_min = findViewById(R.id.start_sign_min);
         sign_hour = findViewById(R.id.sign_hour);
         sign_min = findViewById(R.id.sign_min);
-        uploadPic.setOnClickListener(v -> picOpen());
-        AddAct.setOnClickListener(v -> verify());
-
+        //設定區
+        uploadPic.setOnClickListener(v -> picOpen());//上傳圖片鈕動作
+        AddAct.setOnClickListener(v -> verify());//新增活動鈕動作
     }
-
+    //資料錯誤檢查
     public void verify(){
-        String error = "";
+        String error = "";//錯誤訊息容器
+        //檢查是否含有空白或不正確之資料
         ACTN = actName.getText().toString();
         Log.v("test","ACTN = "+ACTN.trim().isEmpty());
         error = ACTN.trim().isEmpty()?error+"活動名稱, ":error;
@@ -174,8 +177,9 @@ public class add_activity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent,"請選擇商品照片"), OPEN_PIC);
     }
 
-    Bitmap dataToConvert;
+    Bitmap dataToConvert;//待轉換活動封面照
     @Override
+    //開啟照片後，如果可以將自動轉換大小
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == OPEN_PIC && RESULT_OK == resultCode){
@@ -220,7 +224,7 @@ public class add_activity extends AppCompatActivity {
 
         }
     }
-
+    //上傳欲新增的活動
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";
 
@@ -233,8 +237,6 @@ public class add_activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             try{
-
-
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass);
                 String result ="";
@@ -255,7 +257,6 @@ public class add_activity extends AppCompatActivity {
                 cstmt.setString(14,DESC );
                 cstmt.executeUpdate();
                 return cstmt.getString(1);
-
             }catch (Exception e){
                 e.printStackTrace();
                 res = e.toString();
@@ -273,6 +274,7 @@ public class add_activity extends AppCompatActivity {
 
 
     }
+    //回到首頁
     public void onBackPressed(){
         Intent intent = new Intent(add_activity.this, Home.class);
         startActivity(intent);

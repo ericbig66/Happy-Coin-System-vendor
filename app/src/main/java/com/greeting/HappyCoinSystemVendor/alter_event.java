@@ -56,10 +56,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.user;
 import static com.greeting.HappyCoinSystemVendor.Login.entryIsRecent;
 
 public class alter_event extends AppCompatActivity {
-
-    //array list 已移至 main menu
     int function = 0;
-
     LinearLayout ll;
     ScrollView sv;
     String SQL ;

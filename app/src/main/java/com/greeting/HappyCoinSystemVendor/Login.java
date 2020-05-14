@@ -218,6 +218,11 @@ public class Login extends AppCompatActivity {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
     }
 
+    //簡化的toast提示訊息==>popupL(getApplicationContext(),"訊息內容");==>長時間顯示
+    public static void popupL(Context context, String content){
+        Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
+    }
+
     //Log.v簡化版==>lv("訊息");
     public static void lv(String s){
         Log.v("test",s);
