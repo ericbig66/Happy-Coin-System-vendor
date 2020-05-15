@@ -1,6 +1,5 @@
 package com.greeting.HappyCoinSystemVendor;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,11 +43,13 @@ import static com.greeting.HappyCoinSystemVendor.Login.SellId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.pf;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
+import static com.greeting.HappyCoinSystemVendor.Login.popupL;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
-
 public class  alter_product_detail extends AppCompatActivity {
-
+    int OPEN_PIC = 1021;//開啟頭像時須使用的程式執行序號
+    String b64 = PIMG.get(SellId);//取得商品圖之base64碼
     //系統時間及格式設定
     Date curDate = new Date(System.currentTimeMillis()) ;//取得系統時間
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");//格式化日期顯示方式
@@ -61,6 +62,7 @@ public class  alter_product_detail extends AppCompatActivity {
     String mm = month.format(curDate);
     String dd = day.format(curDate);
 
+    //將base64轉換為點陣圖
     public Bitmap ConvertToBitmap(int ID){
         try{
 //            Log.v("test",PIMG.get(ID));
@@ -69,6 +71,7 @@ public class  alter_product_detail extends AppCompatActivity {
             int w = proimg.getWidth();
             int h = proimg.getHeight();
             Log.v("test","pic"+ID+" original = "+w+"*"+h);
+            //調整圖片大小
             int scale = 1;
             if(w>h && (w/360)>1 || h==w && (w/360)>1){
                 scale = w/360;
@@ -81,28 +84,25 @@ public class  alter_product_detail extends AppCompatActivity {
             }
             Log.v("test","pic"+ID+" resized = "+w+"*"+h);
             proimg = Bitmap.createScaledBitmap(proimg, w, h, false);
-            return proimg;
+            return proimg;//回傳圖片
         }catch (Exception e){
             Log.v("test","error = "+e.toString());
             return null;
         }
-
-
     }
-
+    //輸入框 上(下)架數量,品名,     單價,            商品代碼,      安全庫存,        商品介紹,           廠商名稱,    庫存量
     EditText Qt, EdtProductName, edtProductPrice, edtProductID, edtProductSafe, edtProductDetail, edtVdrName, edtProductAmount;
-    RadioButton RadioShelves, RadioTakeOff;
-    Button alterPic;
-    ImageView merPic;
+    RadioButton RadioShelves, RadioTakeOff;//上架按鈕、下架按鈕
+    Button alterPic;//修改圖片鈕
+    ImageView merPic;//商品圖放置處
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_alter_product_detail);
         Log.v("test","pf is null (0)=" + (pf==null));
+        //定義區
         merPic = findViewById(R.id.merPic);
-        merPic.setImageBitmap(ConvertToBitmap(SellId));
-
         edtVdrName = findViewById(R.id.edtVdrName);
         edtProductAmount = findViewById(R.id.edtProductAmount);
         EdtProductName = findViewById(R.id.EdtProductName);
@@ -110,29 +110,25 @@ public class  alter_product_detail extends AppCompatActivity {
         edtProductSafe = findViewById(R.id.edtProductSafe);
         edtProductDetail = findViewById(R.id.edtProductDetail);
         edtProductPrice = findViewById(R.id.edtProductPrice);
-
-        EdtProductName.setText(Pname.get(SellId));
-        edtVdrName.setText(RCdata[0]);
-        edtProductID.setText(PID.get(SellId));
-        edtProductAmount.setText(Pamount.get(SellId)+"");
-        edtProductPrice.setText(Pprice.get(SellId)+"");
-        edtProductSafe.setText(Psafe_product.get(SellId)+"");
-        edtProductDetail.setText(Pproduct_description.get(SellId)+"");
-
-
         RadioShelves=findViewById(R.id.RadioShelves);
         RadioTakeOff=findViewById(R.id.RadioTakeOff);
         alterPic = findViewById(R.id.alterPic);
-        alterPic.setOnClickListener(v ->picOpen());
         Button btnChangeConfirm=findViewById(R.id.btnChangeConfirm);
-
         Qt = findViewById(R.id.Qt);
-        Qt.setText(ReleseQuantity+"");
-
-//      Button btnChangeConfirm = findViewById(R.id.btnChangeConfirm);
-        btnChangeConfirm.setOnClickListener(v -> verifier());
+        //設定區
+        merPic.setImageBitmap(ConvertToBitmap(SellId));                 //設定商品圖片
+        EdtProductName.setText(Pname.get(SellId));                      //設定品名
+        edtVdrName.setText(RCdata[0]);                                  //廠商名稱
+        edtProductID.setText(PID.get(SellId));                          //產品代碼
+        edtProductAmount.setText(Pamount.get(SellId)+"");               //庫存量
+        edtProductPrice.setText(Pprice.get(SellId)+"");                 //單價
+        edtProductSafe.setText(Psafe_product.get(SellId)+"");           //安全庫存
+        edtProductDetail.setText(Pproduct_description.get(SellId)+"");  //商品說明
+        Qt.setText(ReleseQuantity+"");                                  //設定上(下)架數量[預設為0]
+        alterPic.setOnClickListener(v ->picOpen());//點擊修改圖片時的動作
+        btnChangeConfirm.setOnClickListener(v -> verifier());//點擊確認時的動作
     }
-
+    ////清空列表以確保商品資訊不會重複疊加
     public void clear(){
         PID.clear();
         Pname.clear();
@@ -142,6 +138,7 @@ public class  alter_product_detail extends AppCompatActivity {
     }
 
     @Override
+    //清除陣列並返回首頁
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(alter_product_detail.this,alter_product.class);
@@ -151,16 +148,14 @@ public class  alter_product_detail extends AppCompatActivity {
         finish();
     }
 
-    int OPEN_PIC = 1021;
-    String b64 = PIMG.get(SellId);
-    //開啟頭像
+    //更換商品圖
     public void picOpen(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,"請選擇商品照片"), OPEN_PIC);
     }
-
+    //設定上新的商品圖
     Bitmap dataToConvert;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -173,6 +168,7 @@ public class  alter_product_detail extends AppCompatActivity {
             dataToConvert = ((BitmapDrawable)merPic.getDrawable()).getBitmap();
             int w = dataToConvert.getWidth();
             int h = dataToConvert.getHeight();
+            //設定圖片大小
             int scale = 1;
             if(w>h && (w/360)>1 || h==w && (w/360)>1){
                 scale = w/360;
@@ -183,17 +179,18 @@ public class  alter_product_detail extends AppCompatActivity {
                 w = w/scale;
                 h = h/scale;
             }
-            merPic.setImageBitmap(Bitmap.createScaledBitmap(dataToConvert, w, h, false));
+            merPic.setImageBitmap(Bitmap.createScaledBitmap(dataToConvert, w, h, false));//設定商品新圖片
+            //自動將圖片轉換出base64(供資料庫儲存使用)
             ConvertToBase64 convertToBase64 = new ConvertToBase64();
             convertToBase64.execute("");
         }
     }
-
+    //將點陣圖轉換為base64
     private class ConvertToBase64 extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(alter_product_detail.this,"請稍後...",Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
         @Override
         protected String doInBackground(String... strings) {
@@ -203,19 +200,17 @@ public class  alter_product_detail extends AppCompatActivity {
             String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             return imageString;
         }
-
         @Override
         protected void onPostExecute(String s) {
-
             super.onPostExecute(s);
-            b64 = s;
-
+            b64 = s;//將base64填入變數替換舊圖片
         }
     }
 
-
-    String error = "", pid, pname, pdetail;
-    int quantity = 0, price, psafe;
+    //更新的商品資訊
+    String error = "", pid, pname, pdetail;//錯誤訊息, 商品代碼, 品名, 商品說明
+    int quantity = 0, price, psafe;//商品上(下)架數量、單價、安全庫存
+    //新資訊錯誤檢查
     public void verifier(){
         error = EdtProductName.getText().toString().trim().isEmpty()?error+"商品名稱, ":error;
         error = edtProductPrice.getText().toString().trim().isEmpty()?error+"商品價格, ":error;
@@ -224,10 +219,10 @@ public class  alter_product_detail extends AppCompatActivity {
         if(Qt.getText().toString().trim().isEmpty()){Qt.setText("0");}
         else if(RadioShelves.isChecked()){quantity = Integer.parseInt(Qt.getText().toString());}
         else if(RadioTakeOff.isChecked()){quantity = Integer.parseInt(Qt.getText().toString())*-1;}
-
+        //有錯報錯，沒錯繼續將資料填入變數
         if(!error.trim().isEmpty()){
             error = "請確實填寫"+error.substring(0,error.length()-2);
-            Toast.makeText(alter_product_detail.this,error,Toast.LENGTH_SHORT).show();
+            popupL(getApplicationContext(),error);
             error="";
         }else{
             pid= edtProductID.getText().toString();
@@ -238,25 +233,19 @@ public class  alter_product_detail extends AppCompatActivity {
             ConnectMySql connectMySql = new ConnectMySql();
             connectMySql.execute("");
         }
-
-
-
     }
 
-
-    //建立連接與查詢非同步作業
+    //更新商品資訊置資料庫
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";//錯誤信息儲存變數
-        //開始執行動作
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
 //            Toast.makeText(AlterProductDetail.this,"請稍後...",Toast.LENGTH_SHORT).show();
         }
-        //查詢執行動作(不可使用與UI相關的指令)
+        //更新商品資訊
         @Override
         protected String doInBackground(String... strings) {
-            ////////////////////////////////////////////
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass);
@@ -275,7 +264,6 @@ public class  alter_product_detail extends AppCompatActivity {
                 cstmt.executeUpdate();
                 Log.v("test","info updated:\nvname ="+vname+"\npid ="+pid+"\npname ="+pname+"\nprice ="+price+"\nquantity ="+quantity);
                 return cstmt.getString(1);
-
             } catch (Exception e) {
                 e.printStackTrace();
                 res = e.toString();
@@ -288,23 +276,13 @@ public class  alter_product_detail extends AppCompatActivity {
 //            Log.v("test","hello?");
             try{
 //                Log.v("test","excuse me");
-                Toast.makeText(alter_product_detail.this, result, Toast.LENGTH_SHORT).show();
-                if(result.contains("成功")){
+                popup(getApplicationContext(),result);//顯示修改結果
+                if(result.contains("成功")){//若成功將自動返回上頁
                     onBackPressed();
                 }
             }catch (Exception e){
                 Log.v("test","錯誤: "+e.toString());
             }
-
-        }
-    }
-
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if(view != null){
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
         }
     }
 }

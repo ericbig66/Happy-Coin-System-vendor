@@ -42,51 +42,42 @@ import static com.greeting.HappyCoinSystemVendor.Login.Psafe_product;
 import static com.greeting.HappyCoinSystemVendor.Login.ReleseQuantity;
 import static com.greeting.HappyCoinSystemVendor.Login.SellId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
+import static com.greeting.HappyCoinSystemVendor.Login.hideKB;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.pf;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 
 public class alter_product extends AppCompatActivity {
-
-    //連接資料庫的IP、帳號(不可用root)、密碼
-
-
-    //array list已移至main menu
-
-    int function = 0;
-
-    LinearLayout ll;
-    ScrollView sv;
-    public static int cardCounter = 0;
-    String PID = "", PNAME = "", b64 = "",PRODUCT_DESCRIPTION ="";
-    int PPRICE = 0, STOCK = 0, SAFE_STOCK = 0;
+    int function = 0;//功能選擇器(0 = 取得資料庫資料 1= 修改商品)
+    LinearLayout ll;//商品列表顯示區
+    public static int cardCounter = 0;//商品數量
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_alter_product);
-
+        //定義
         ll = findViewById(R.id.ll);
-        sv = findViewById(R.id.sv);
-
+        //連線置資料庫擷取商品資訊
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }
 
-    //建立連接與查詢非同步作業
+    //連接置資料庫進行商品資料擷取或修改商品資訊
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";//錯誤信息儲存變數
-        //開始執行動作
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            Toast.makeText(alter_product.this,"請稍後...",Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
-        //查詢執行動作(不可使用與UI相關的指令)
+        //擷取商品資廖或修改商品資訊
         @Override
         protected String doInBackground(String... strings) {
+            //擷取商品資訊
             if(function == 0) {
                 try {
                     //連接資料庫
@@ -96,7 +87,6 @@ public class alter_product extends AppCompatActivity {
                     String result = "";
                     Statement st = con.createStatement();
                     ResultSet rs = st.executeQuery("select p.* from product p, vendor v where p.vendor = v.VID and acc = '"+acc+"';");
-
                     while (rs.next()) {
                         Login.PID.add(rs.getString(1));
                         Pname.add(rs.getString(3));
@@ -106,26 +96,20 @@ public class alter_product extends AppCompatActivity {
                         Psafe_product.add(rs.getInt(6));
                         Pproduct_description.add(rs.getString(8));
                     }
-
                     return Login.PID.size() + "";//回傳結果給onPostExecute==>取得輸出變數(位置)
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     res = e.toString();
                 }
                 return res;
             }
-            ////////////////////////////////////////////
+            //修改商品資訊
             else if(function == 1){
                 try {
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection con = DriverManager.getConnection(url, user, pass);
                     //建立查詢
                     String result ="";
-                    //Statement st = con.createStatement();
-//                ResultSet rs = st.executeQuery("call login(@fname, '"+account+"', '"+password+"'); select @fname;");
-                    //experiment part start
-                    //此處呼叫Stored procedure(call 函數名稱(?)==>問號數量代表輸出、輸入的變數數量)
                     CallableStatement cstmt = con.prepareCall("{? = call alter_product(?,?,?,?,?,?,?,?)}");
                     cstmt.registerOutParameter(1,Types.VARCHAR);
                     cstmt.setString(2, acc);
@@ -139,9 +123,6 @@ public class alter_product extends AppCompatActivity {
                     cstmt.executeUpdate();
                     return cstmt.getString( 1);
 //                    Log.v("test","info updated:\nvname ="+vname+"\npid ="+PID.get(SellId)+"\npname ="+Pname.get(SellId)+"\nprice ="+Pprice.get(SellId)+"\nquantity ="+ReleseQuantity);
-//                    return cstmt.getString("info");
-                    //experiment part end
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     res = e.toString();
@@ -154,15 +135,17 @@ public class alter_product extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             try{
+                //取得商品資訊後
                 if(function == 0){
-                    cardCounter = Integer.parseInt(result);
-                    cardRenderer();
+                    cardCounter = Integer.parseInt(result);//取得資料陣列大小
+                    cardRenderer();//產生商品卡
                 }
+                //商品修改後
                 else if(function == 1){
-                    Toast.makeText(alter_product.this, result, Toast.LENGTH_SHORT).show();
-                    if(result.contains("成功")){
-                        clear();
-                        recreate();
+                    popup(getApplicationContext(),result);//顯示修改結果
+                    if(result.contains("成功")){//修改成功時
+                        clear();//清除資料列表
+                        recreate();//重新繪製頁面(更新資料)
                     }
                 }
                 function = -1;
@@ -230,7 +213,7 @@ public class alter_product extends AppCompatActivity {
             final int id = ID;
             if(amount.getText().toString().trim().isEmpty()){amount.setText("0");}
             final int quantity = Integer.parseInt(amount.getText().toString());
-            closekeybord();
+            hideKB(this);
             identifier("D",id,quantity);
         });
 
@@ -307,7 +290,7 @@ public class alter_product extends AppCompatActivity {
             final int id = ID;
             if(amount.getText().toString().trim().isEmpty()){amount.setText("0");}
             final int quantity = Integer.parseInt(amount.getText().toString());
-            closekeybord();
+            hideKB(this);
             identifier("D",id,quantity);
             amount.setText("");
         });
@@ -328,7 +311,7 @@ public class alter_product extends AppCompatActivity {
             final int id = ID;
             if(amount.getText().toString().trim().isEmpty()){amount.setText("0");}
             final int quantity = Integer.parseInt(amount.getText().toString());
-            closekeybord();
+            hideKB(this);
             identifier("R",id,quantity);
         });
 
@@ -365,38 +348,33 @@ public class alter_product extends AppCompatActivity {
         dp = dp * ((float) Resources.getSystem().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return (int)dp;
     }
-    /////////////////////////////////////////////
+    //功能判斷器
     public void identifier(String act, int ID,int quantity){
+        //檢視詳細資料
         if(act.equals("D")){
             //Log.v("test","您正在檢視第"+Pname.get(ID)+"的詳細資料");
             SellId=ID;
             Intent intent = new Intent(alter_product.this,alter_product_detail.class);
             startActivity(intent);
             finish();
+        //修改商品資料
         }else if(act.equals("R")){
             //Log.v("test","您上架了"+quantity+"個"+Pname.get(ID));
             function = 1;
             SellId = ID;
             ReleseQuantity = quantity;
+            //數量檢查
             if(quantity>0){
                 ConnectMySql connectMySql = new ConnectMySql();
                 connectMySql.execute("");
             }else{
                 function = -1;
-                Toast.makeText(alter_product.this,"請至少上架一項商品",Toast.LENGTH_SHORT).show();
+                popup(getApplicationContext(), "請至少上架一項商品");
             }
         }
     }
 
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if(view != null){
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
-        }
-    }
-
+    //清空列表以確保商品資訊不會重複疊加
     public void clear(){
         Login.PID.clear();
         Pname.clear();
@@ -405,8 +383,8 @@ public class alter_product extends AppCompatActivity {
         PIMG.clear();
     }
 
+    //清空資料陣列並返回首頁
     public void onBackPressed(){
-
         Log.v("test","excuse me------------------------------------------------");
         Intent intent = new Intent(alter_product.this, Home.class);
         startActivity(intent);
@@ -415,6 +393,7 @@ public class alter_product extends AppCompatActivity {
         finish();
     }
 
+    //將base64轉換為點陣圖
     public Bitmap ConvertToBitmap(int ID){
         try{
 //            Log.v("test",PIMG.get(ID));
@@ -423,6 +402,7 @@ public class alter_product extends AppCompatActivity {
             int w = proimg.getWidth();
             int h = proimg.getHeight();
             Log.v("test","pic"+ID+" original = "+w+"*"+h);
+            //比例調整
             int scale = 1;
             if(w>h && (w/120)>1 || h==w && (w/120)>1){
                 scale = w/120;
@@ -435,7 +415,7 @@ public class alter_product extends AppCompatActivity {
             }
             Log.v("test","pic"+ID+" resized = "+w+"*"+h);
             proimg = Bitmap.createScaledBitmap(proimg, w, h, false);
-            return proimg;
+            return proimg;//回傳圖片
         }catch (Exception e){
             Log.v("test","error = "+e.toString());
             return null;

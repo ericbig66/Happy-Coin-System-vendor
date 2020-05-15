@@ -50,43 +50,48 @@ import static com.greeting.HappyCoinSystemVendor.Login.Astart_date;
 import static com.greeting.HappyCoinSystemVendor.Login.EventId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
 
+import static com.greeting.HappyCoinSystemVendor.Login.hideKB;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 import static com.greeting.HappyCoinSystemVendor.Login.entryIsRecent;
 
 public class alter_event extends AppCompatActivity {
-    int function = 0;
-    LinearLayout ll;
-    ScrollView sv;
-    String SQL ;
-    public static int cardCounter = 0;
+    int function = 0;//功能選擇器(0 = 取得資料庫資料 1= 修改活動)
+    LinearLayout ll;//活動列表顯示區
+    String SQL ;//由近期活動進入時會新增的資料庫查詢條件
+    public static int cardCounter = 0;//活動數量
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_alter_event);
+        //定義區
         ll = findViewById(R.id.ll);
-        sv = findViewById(R.id.sv);
+        //設定區
+        //如果是由近期活動進入此頁
         if(entryIsRecent)
-            SQL = " and actDate> now()";
+            SQL = " and actDate> now()";//條件限制為未舉辦活動
         else
             SQL = "";
+        //從資料庫擷取活動資料
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }
+
+    //查詢活動資料或修改資料
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res = "";//錯誤信息儲存變數
-
         //開始執行動作
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(alter_event.this, "請稍後...", Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
-
         //查詢執行動作(不可使用與UI相關的指令)
         @Override
         protected String doInBackground(String... strings) {
+            //取得活動資料
             if (function == 0) {
                 try {
                     //連接資料庫
@@ -95,11 +100,7 @@ public class alter_event extends AppCompatActivity {
                     //建立查詢
                     String result = "";
                     Statement st = con.createStatement();
-//                    ResultSet rs= st.executeQuery("select vid from vendor where acc = '"+acc+"'");
-//                    rs.next();
-//                    String vid = rs.getString(1);
                     ResultSet  rs = st.executeQuery("select a.* from activity a, vendor v where v.vid = a.id  and v.acc= '"+acc+"'"+SQL);
-
                     while (rs.next()) {
                             Aid.add(rs.getString(1));
 //                            Avendor.add(rs.getString(2));
@@ -124,10 +125,9 @@ public class alter_event extends AppCompatActivity {
                 }
                 return res;
             }
-            ////////////////////////////////////////////
+            //修改活動資訊
             else if (function == 1) {
                 try {
-
                     Class.forName("com.mysql.jdbc.Driver");
                     Connection con = DriverManager.getConnection(url, user, pass);
                     //建立查詢
@@ -149,7 +149,6 @@ public class alter_event extends AppCompatActivity {
                     cstmt.setString(14, Adesc.get(EventId));
                     cstmt.executeUpdate();
                     return cstmt.getString(1);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     res = e.toString();
@@ -162,15 +161,17 @@ public class alter_event extends AppCompatActivity {
         @Override
         protected void onPostExecute (String result){
             try {
+                //取得活動資料
                 if (function == 0) {
 //                    Log.v("test","hey "+result);
                     cardCounter = Integer.parseInt(result);
                     cardRenderer();
+                //修改活動資訊
                 } else if (function == 1) {
-                    Toast.makeText(alter_event.this, result, Toast.LENGTH_SHORT).show();
-                    if(result.contains("成功")){
-                        clear();
-                        recreate();
+                    popup(getApplicationContext(),result);
+                    if(result.contains("成功")){//修改成功時
+                        clear();//清除資料列表
+                        recreate();//重新繪製頁面(更新資料)
                     }
                 }
                 function = -1;
@@ -207,14 +208,14 @@ public class alter_event extends AppCompatActivity {
         frame.setBackgroundColor(Color.parseColor("#D1FFDE"));
         frame.setLayoutParams(framep);
 
-        //圖片&價格區
+        //圖片&回饋金額
         LinearLayout picpri = new LinearLayout(this);
         LinearLayout.LayoutParams picprip = new LinearLayout.LayoutParams(DP(120), DP(120));
         picprip.setMargins(0, 0, DP(5), 0);
         picpri.setOrientation(LinearLayout.VERTICAL);
         picpri.setLayoutParams(picprip);
 
-        //商品圖片
+        //活動圖片
         ImageView propic = new ImageView(this);
         LinearLayout.LayoutParams propicp = new LinearLayout.LayoutParams(DP(120), DP(90));
         propic.setImageBitmap(ConvertToBitmap(ID));
@@ -223,7 +224,7 @@ public class alter_event extends AppCompatActivity {
         propic.setId(5 * ID);
         propic.setOnClickListener(v -> {
             final int id = ID;
-            closekeybord();
+            hideKB(this);
             identifier("D", id,0);
         });
 
@@ -234,7 +235,7 @@ public class alter_event extends AppCompatActivity {
         price.setTextSize(18f);
         price.setLayoutParams(picprip);
 
-        //商品訊息區
+        //活動訊息區
         LinearLayout proinf = new LinearLayout(this);
         LinearLayout.LayoutParams proinfp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -309,7 +310,7 @@ public class alter_event extends AppCompatActivity {
         detail.setId(5 * ID + 3);
         detail.setOnClickListener(v -> {
             final int id = ID;
-            closekeybord();
+            hideKB(this);
             identifier("D", id, 0);
         });
 
@@ -328,7 +329,7 @@ public class alter_event extends AppCompatActivity {
         buybtn.setOnClickListener(v -> {
             final int id = ID;
             if(amount_add.getText().toString().trim().isEmpty()){amount_add.setText("0");}
-            closekeybord();
+            hideKB(this);
             identifier("B", id, Integer.parseInt(amount_add.getText().toString()));
         });
 
@@ -386,7 +387,7 @@ public class alter_event extends AppCompatActivity {
 
         }
     }
-
+    //清空列表以確保活動資訊不會重複疊加
     public void clear() {
         Aid.clear();
         Aname.clear();
@@ -404,15 +405,6 @@ public class alter_event extends AppCompatActivity {
         AsignEnd.clear();
     }
 
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
     public void onBackPressed() {
         entryIsRecent = false ;
         Intent intent = new Intent(alter_event.this, Home.class);
@@ -421,7 +413,7 @@ public class alter_event extends AppCompatActivity {
         finish();
     }
 
-
+    //將base64轉換為點陣圖
     public Bitmap ConvertToBitmap(int ID) {
         try {
 //            Log.v("test",PIMG.get(ID));
@@ -430,6 +422,7 @@ public class alter_event extends AppCompatActivity {
             int w = proimg.getWidth();
             int h = proimg.getHeight();
 //            Log.v("test", "pic" + ID + " original = " + w + "*" + h);
+            //調整圖片大小
             int scale = 1;
             if (w > h && (w / DP(120)) > 1 || h == w && (w / DP(120)) > 1) {
                 scale = w / DP(120);
@@ -442,7 +435,7 @@ public class alter_event extends AppCompatActivity {
             }
 //            Log.v("test", "pic" + ID + " resized = " + w + "*" + h);
             proimg = Bitmap.createScaledBitmap(proimg, w, h, false);
-            return proimg;
+            return proimg;//回傳圖片
         } catch (Exception e) {
 //            Log.v("test", "error = " + e.toString());
             return null;

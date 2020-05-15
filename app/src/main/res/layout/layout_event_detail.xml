@@ -399,9 +399,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="上傳活動封面照片"
                 android:background="@drawable/rounded_button"
-                android:textColor="#FFFFFF"/>
+                android:text="修改活動封面照片"
+                android:textColor="#FFFFFF" />
 
             <EditText
                 android:id="@+id/ActDesc"

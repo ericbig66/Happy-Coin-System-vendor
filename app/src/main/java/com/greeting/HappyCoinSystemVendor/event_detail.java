@@ -44,20 +44,23 @@ import static com.greeting.HappyCoinSystemVendor.Login.ConvertToBitmap;
 import static com.greeting.HappyCoinSystemVendor.Login.EventId;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
+import static com.greeting.HappyCoinSystemVendor.Login.popupL;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 public class event_detail extends AppCompatActivity {
-    String[] date_time = new String[6];
+    String[] date_time = new String[6];//日期/時間切分放置用陣列
     public void Date_time_spliter(String date){
         date_time = date.split("-| |:");
-    }
+    }//分割方式將以"-"、" "、":"為切割點
+    //輸入框==>活動名稱,獎勵金額,人數限制, 活動說明, 活動年,        活動月,         活動日,       開始報名年,      開始報名月,        開始報名日,      報名截止年,         報名截止月,           報名截止日,        簽到截止分,簽到截止時, 開放簽到分,      開放簽到時
     EditText actName, reward, people, ActDesc,act_date_year,act_date_month,act_date_day,start_date_year,start_date_month,start_date_day,deadline_date_year,deadline_date_month,deadline_date_day,sign_min,sign_hour,start_sign_min,start_sign_hour;
-    ImageView actPic;
-    Button uploadPic, AddAct;
-
-    final int OPEN_PIC = 1021;
+    ImageView actPic;//活動封面圖放置處
+    Button uploadPic, AddAct;//修改圖片、修改活動照片 按鈕
+    final int OPEN_PIC = 1021;//開啟頭像時須使用的程式執行序號
+    //擷取資料 活動圖檔,活動名稱, 活動說明,  開始報名時間,   報名截止時間,     開始簽到時間,簽到截止時間, 活動日期
     String b64 = "", ACTN="", DESC="", start_sign="",act_deadline="", fu02l4="", end_sign="",act_date;
-    int RW=0, PP=0;
+    int RW=0, PP=0;//活動獎勵、人數限制
 
     //系統時間及格式設定
     Date curDate = new Date(System.currentTimeMillis()) ;//取得系統時間
@@ -75,6 +78,7 @@ public class event_detail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_event_detail);
 //        lv("EventID = "+EventId);
+        //定義區
         actName = findViewById(R.id.actName);
         reward = findViewById(R.id.reward);
         people = findViewById(R.id.people);
@@ -95,23 +99,23 @@ public class event_detail extends AppCompatActivity {
         start_sign_min = findViewById(R.id.start_sign_min);
         sign_hour = findViewById(R.id.sign_hour);
         sign_min = findViewById(R.id.sign_min);
-        uploadPic.setOnClickListener(v -> picOpen());
-        AddAct.setOnClickListener(v -> verify());
-
-        actName.setText(Aname.get(EventId));
-        people.setText(Aamount.get(EventId)+"");
-        reward.setText(Areward.get(EventId)+"");
-        ActDesc.setText(Adesc.get(EventId));
-        actPic.setImageBitmap(ConvertToBitmap(Actpic.get(EventId)));
-        actPic.setVisibility(View.VISIBLE);
-        Date_time_spliter(Astart_date.get(EventId)+"");//開始報名
+        //設定區
+        uploadPic.setOnClickListener(v -> picOpen());//修改活動封面圖時的動作
+        AddAct.setOnClickListener(v -> verify());//點擊確認修改時的動作
+        actName.setText(Aname.get(EventId));                           //活動名稱
+        people.setText(Aamount.get(EventId)+"");                       //人數限制
+        reward.setText(Areward.get(EventId)+"");                       //獎勵金額
+        ActDesc.setText(Adesc.get(EventId));                           //活動說明
+        actPic.setImageBitmap(ConvertToBitmap(Actpic.get(EventId)));   //設定活動封面圖
+        actPic.setVisibility(View.VISIBLE);                            //將活動圖片設為可見
+        Date_time_spliter(Astart_date.get(EventId)+"");                //開始報名時間
 //        lv("0 = "+date_time[0]);
 //        lv(date_time[1]);
 //        lv(date_time[2]);
         start_date_year.setText(date_time[0]);
         start_date_month.setText(date_time[1]);
         start_date_day.setText(date_time[2]);
-        Date_time_spliter(Adeadline_date.get(EventId)+"");//報名截止
+        Date_time_spliter(Adeadline_date.get(EventId)+"");//報名截止時間
         deadline_date_year.setText(date_time[0]);
         deadline_date_month.setText(date_time[1]);
         deadline_date_day.setText(date_time[2]);
@@ -119,17 +123,18 @@ public class event_detail extends AppCompatActivity {
         act_date_year.setText(date_time[0]);
         act_date_month.setText(date_time[1]);
         act_date_day.setText(date_time[2]);
-        Date_time_spliter(AsignStart.get(EventId)+"");//開始簽到
+        Date_time_spliter(AsignStart.get(EventId)+"");//開始簽到時間
         start_sign_hour.setText(date_time[0]);
         start_sign_min.setText(date_time[1]);
-        Date_time_spliter(AsignEnd.get(EventId)+"");//簽到截止
+        Date_time_spliter(AsignEnd.get(EventId)+"");//簽到截止時間
         sign_hour.setText(date_time[0]);
         sign_min.setText(date_time[1]);
-
-
     }
+
+    //檢查修改的資料中是否有誤
     public void verify(){
-        String error = "";
+        String error = "";//錯誤訊息
+        //錯誤檢查
         ACTN = actName.getText().toString();
         Log.v("test","ACTN = "+ACTN.trim().isEmpty());
         error = ACTN.trim().isEmpty()?error+"活動名稱, ":error;
@@ -208,9 +213,8 @@ public class event_detail extends AppCompatActivity {
             ConnectMySql connectMySql = new ConnectMySql();
             connectMySql.execute("");
         }else{
-            Toast.makeText(event_detail.this,error,Toast.LENGTH_LONG).show();
+            popupL(getApplicationContext(),error);
         }
-
     }
 
     //開啟頭像
@@ -220,7 +224,7 @@ public class event_detail extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,"請選擇商品照片"), OPEN_PIC);
     }
-
+    //修改活動封面照
     Bitmap dataToConvert;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -233,22 +237,24 @@ public class event_detail extends AppCompatActivity {
             int w,h,scale;
             w = dataToConvert.getWidth();
             h = dataToConvert.getHeight();
+            //設定照片大小
             if(w>h||w==h&&w/120>1){scale = w/120;}
             else{scale = h/120;}
             w/=scale;
             h/=scale;
             actPic.setImageBitmap(Bitmap.createScaledBitmap(dataToConvert,w,h,false));
             actPic.setVisibility(View.VISIBLE);
+            //同時將圖片轉為base64(供資料庫儲存)
             ConvertToBase64 convertToBase64 = new ConvertToBase64();
             convertToBase64.execute("");
         }
     }
-
+    //將點陣圖轉換為base64碼
     private class ConvertToBase64 extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(event_detail.this,"請稍後...",Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
         @Override
         protected String doInBackground(String... strings) {
@@ -261,27 +267,24 @@ public class event_detail extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-
             super.onPostExecute(s);
-            b64 = s;
-
+            b64 = s;//將變數中的舊資料取代為新資料
         }
     }
 
+    //修改商品資料
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";
 
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            Toast.makeText(event_detail.this,"新增中...",Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"修改中...");
         }
-
+        //修改資料
         @Override
         protected String doInBackground(String... strings) {
             try{
-
-
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass);
                 String result ="";
@@ -302,7 +305,6 @@ public class event_detail extends AppCompatActivity {
                 cstmt.setString(14,DESC );
                 cstmt.executeUpdate();
                 return cstmt.getString(1);
-
             }catch (Exception e){
                 e.printStackTrace();
                 res = e.toString();
@@ -312,20 +314,18 @@ public class event_detail extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(event_detail.this,result,Toast.LENGTH_LONG).show();
-            if (result.contains("成功")) {
+            popupL(getApplicationContext(),result);//顯示修改結果
+            if (result.contains("成功")) {//若成功將自動返回上個頁面
                 onBackPressed();
             }
         }
-
-
     }
+
+    //回到首頁
     public void onBackPressed(){
         Intent intent = new Intent(event_detail.this, Home.class);
         startActivity(intent);
         finish();
     }
-    public static void lv(String s){
-        Log.v("test",s);
-    }
+
 }
