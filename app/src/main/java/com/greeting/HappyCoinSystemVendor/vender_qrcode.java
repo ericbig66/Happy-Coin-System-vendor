@@ -44,19 +44,21 @@ import static com.greeting.HappyCoinSystemVendor.Login.PID;
 import static com.greeting.HappyCoinSystemVendor.Login.Pname;
 import static com.greeting.HappyCoinSystemVendor.Login.RCdata;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
+import static com.greeting.HappyCoinSystemVendor.Login.hideKB;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 public class vender_qrcode extends AppCompatActivity {
+    ImageView qrCode;//QRcode顯示區
+    Spinner DropDown;//商品列表
+    TextView actName;//商品名稱
+    EditText amount;//購買數量
+    Button submit;//確認按鈕
+    int pos =0;//商品位於陣列中第幾項
 
-    ImageView qrCode;
-    Spinner DropDown;
-    TextView actName;
-    EditText amount;
-    Button submit;
-    int pos =0;
-
+    //清除陣列資料(以免重複疊加)然後返回首頁
     public void onBackPressed(){
         Intent intent = new Intent(vender_qrcode.this, Home.class);
         startActivity(intent);
@@ -64,71 +66,70 @@ public class vender_qrcode extends AppCompatActivity {
         Pname.clear();
         finish();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_vender_qrcode);
-
+        //定義區
         qrCode = findViewById(R.id.qrCode);
         DropDown = findViewById(R.id.DropDown);
         actName = findViewById(R.id.actName);
         amount = findViewById(R.id.amount);
         submit = findViewById(R.id.submit);
-
-
-
+        //設定區
+          //確認按鈕點擊動作
         submit.setOnClickListener(v -> {
+            //偵測數量是否正確
             if(amount.getText().toString().trim().isEmpty() || Integer.parseInt(amount.getText().toString())<1){
                 Toast.makeText(vender_qrcode.this,"請輸入正確的數量",Toast.LENGTH_SHORT);
             }else{
-                GenerateCode(pos);
-                closekeybord();
-                qrCode.setVisibility(View.VISIBLE);
+                GenerateCode(pos);//產生QRcode
+                hideKB(this);
+                qrCode.setVisibility(View.VISIBLE);//顯示兌換QRcode
             }
         });
-
+          //偵測下拉式選單選種中項目
         DropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 actName.setText("掃描我兌換"+Pname.get(position));
-                qrCode.setVisibility(View.GONE);
-                pos = position;
+                qrCode.setVisibility(View.GONE);//隱藏原先的QRcode
+                pos = position;//將選項位置指定給位置處理變數
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
-
+          //取得商品資訊
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }
 
+    //產生QRcode
     public void GenerateCode(int position){
         BarcodeEncoder encoder = new BarcodeEncoder();
+        //條碼格式：商品代碼+"e.4a93,"+數量+"e.4a93,"+廠商名稱
         try{
             Bitmap bit = encoder.encodeBitmap((PID.get(position) + "e.4a93," + Integer.parseInt(amount.getText().toString()) + "e.4a93," + RCdata[0])
                     , BarcodeFormat.QR_CODE,1000,1000);
-            qrCode.setImageBitmap(bit);
+            qrCode.setImageBitmap(bit);//繪製QRcode
         }catch (WriterException e) {
             e.printStackTrace();
         }
     }
 
-
-    //建立連接與查詢非同步作業
+    //查詢商品列表資料
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res = "";//錯誤信息儲存變數
 
-        //開始執行動作
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(vender_qrcode.this, "請稍後...", Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
         }
 
-        //查詢執行動作(不可使用與UI相關的指令)
+        //查詢商品資料
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -143,7 +144,6 @@ public class vender_qrcode extends AppCompatActivity {
                     Pname.add(rs.getString(2));
                 }
                 return Pname.size() + "";//回傳結果給onPostExecute==>取得輸出變數(位置)
-
             } catch (Exception e) {
                 e.printStackTrace();
                 res = e.toString();
@@ -157,16 +157,6 @@ public class vender_qrcode extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(vender_qrcode.this, android.R.layout.simple_spinner_item, Pname);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             DropDown.setAdapter(adapter);
-        }
-
-    }
-
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

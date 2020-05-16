@@ -30,24 +30,26 @@ import java.sql.Types;
 
 import static com.greeting.HappyCoinSystemVendor.Home.vname;
 import static com.greeting.HappyCoinSystemVendor.Login.acc;
+import static com.greeting.HappyCoinSystemVendor.Login.hideKB;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
 import static com.greeting.HappyCoinSystemVendor.Login.pf;
 import static com.greeting.HappyCoinSystemVendor.Login.pfs;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
+import static com.greeting.HappyCoinSystemVendor.Login.popupL;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
-
 public class member_center extends AppCompatActivity {
-    static final int OPEN_PIC = 1021;
-
+    static final int OPEN_PIC = 1021;//開啟圖片時須使用的程式執行序號
+    //輸入框==>公司名稱,帳號, e-mail,密碼,確認密碼,密碼提示,電話, 舊密碼, 地址,    網站
     EditText name, account, em, pwd, chkpwd, pwdhint, phone, opwd, address, website;
-    Button pic, reg, clr, rotate;
-    CircularImageView profile;
-    int function = 0;
-    String data = "";
+    Button pic, reg, clr, rotate;//按鈕==>頭像更換, 註冊, 清除變更
+    CircularImageView profile;//頭像顯示處
+    int function = 0;//功能選擇器(0= 1= )
     //裝載轉換出的EditText中的文字
+    //==>  公司名,     e-mail,  電話,     密碼,       密碼提示,      確認密碼,     頭像base64,舊密碼,     地址,     網站
     String NAME=null, EM=null, PH=null, PWD = null, PWDHINT=null, CHKPWD=null, b64=null, OPWD=null, ADD=null, WEB=null;
-    Bitmap dataToConvert = pf;
+    Bitmap dataToConvert = pf;//裝載待轉換為base64的圖片
     //清除所有填寫的資料(會被重新填寫按鈕呼叫或註冊成功時會被呼叫)
     public void clear(){
         name.setText("");
@@ -71,14 +73,6 @@ public class member_center extends AppCompatActivity {
         Log.v("test","pf is null (clr)=" + (pf==null));
     }
 
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if(view != null){
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
-        }
-    }
     //檢查填寫資料正確性(按下註冊鈕後呼叫)
     public void verify(){
         boolean haveError = false;
@@ -92,17 +86,10 @@ public class member_center extends AppCompatActivity {
             err = PWD.trim().isEmpty() ? err += "新密碼," : err;
             err = CHKPWD.trim().isEmpty() ? err += "確認新密碼," : err;
         }
-//        err = PWDHINT.trim().isEmpty()?err+="密碼提示":err;
-//        err = EM.trim().isEmpty()?err+="E-mail,":err;
-//        err = PH.trim().isEmpty()?err+="公司電話號碼":err;
-//        err = ADD.trim().isEmpty()?err+="公司地址":err;
-//        err = WEB.trim().isEmpty()?err+="公司網站":err;
-//        err = b64.trim().isEmpty()?err+="上傳頭像,":err;
         err = err.isEmpty()?err:err.substring(0, err.length() - 1);
         if(!err.isEmpty()){err+=" 為必填項目\n請確認是否已填寫!";}
         haveError = !err.isEmpty();
-        if(haveError){
-            Toast.makeText(member_center.this, err, Toast.LENGTH_LONG).show();}
+        if(haveError){popupL(getApplicationContext(),err);}
         err = "";
         if(!PWD.trim().isEmpty() && !CHKPWD.trim().isEmpty() && !PWD.equals(CHKPWD)){
             err += "您輸入的密碼前後不一致，請重新輸入\n";
@@ -133,15 +120,14 @@ public class member_center extends AppCompatActivity {
         OPWD = OPWD.trim().length() > 0 ?OPWD:null;
     }
 
-    Bitmap opf = null;
+    Bitmap opf = null;//舊頭像
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_member_center);
-
+        //定義區
         name = findViewById(R.id.name);
         account = findViewById(R.id.account);
-        account.setText(acc);
         em = findViewById(R.id.em);
         pwd = findViewById(R.id.pwd);
         pwdhint = findViewById(R.id.pwdhint);
@@ -152,21 +138,16 @@ public class member_center extends AppCompatActivity {
         pic = findViewById(R.id.pic);
         reg = findViewById(R.id.reg);
         clr = findViewById(R.id.clr);
-
         opwd = findViewById(R.id.opwd);
-
         profile = findViewById(R.id.profile);
-
-//        rotate = findViewById(R.id.rotate);
-
+//        rotate = findViewById(R.id.rotate);//功能尚未定義(DB)***開發中
+        //設定區
 //        rotate.setOnClickListener(v -> rotate());
-
-        pic.setOnClickListener(v -> picOpen());
-
-
-
-        reg.setOnClickListener(v -> {
-            closekeybord();
+        account.setText(acc);//自動帶入帳戶名稱
+        pic.setOnClickListener(v -> picOpen());//當變更頭像按下時執行的動作
+        reg.setOnClickListener(v -> {//按下確定修改鈕時
+            hideKB(this);
+            //字串擷取
             NAME = name.getText().toString();
             EM = em.getText().toString();
             PH = phone.getText().toString();
@@ -176,18 +157,15 @@ public class member_center extends AppCompatActivity {
             ADD = address.getText().toString();
             WEB = website.getText().toString();
             OPWD = opwd.getText().toString();
-
-
-
-            verify();
+            verify();//驗證輸入資料之正確性
         });
-
+        //放棄修改時自動還原舊頭像並回到首頁
         clr.setOnClickListener(v -> {
             profile.setImageBitmap(opf);
             pf=opf;
             onBackPressed();
         });
-
+        //初始化(帶入)會員資訊
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
     }
@@ -198,14 +176,14 @@ public class member_center extends AppCompatActivity {
 //        degree=(degree+90f)>=(360f)?0f:degree+90f;
 //        profile.setRotation(degree);
 //    }
-
+    //取得舊資料或更新資料
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";
 
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            Toast.makeText(member_center.this,"請稍後...",Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"請稍後...");
             Log.v("test","function (pre) = "+function);
         }
 
@@ -216,6 +194,7 @@ public class member_center extends AppCompatActivity {
                 Connection con = DriverManager.getConnection(url, user, pass);
                 Statement st = con.createStatement();
                 String result ="";
+                //取得舊資料***目前停用
                 if(function == 0){
 //                    ResultSet rs = st.executeQuery("select phone, profileRotate from vendor where mail = '"+ acc+"'");
 //                    while (rs.next()){
@@ -223,6 +202,7 @@ public class member_center extends AppCompatActivity {
 //                    }
                     return result;
                 }else{
+                    //修改資料前確認其用有密碼可修改敏感資料
                     CallableStatement cstmt = con.prepareCall("{? = call vlogin(?,?,?)}");
                     cstmt.registerOutParameter(1, Types.VARCHAR);//設定輸出變數(參數位置,參數型別)
                     cstmt.setString(2, acc);
@@ -230,6 +210,7 @@ public class member_center extends AppCompatActivity {
                     cstmt.setString(4, "N/A");
                     cstmt.executeUpdate();
 //                    Log.v("test","yee"+cstmt.getString(1)+"Acc = "+acc+"PWD = "+PWD);
+                    //若權限符合則修改否則報錯
                     if (!cstmt.getString(1).contains("錯誤")){
                         cstmt = con.prepareCall("{?=call alter_vendor(?,?,?,?,?,?,?,?,?)}");
                         cstmt.registerOutParameter(1, Types.VARCHAR);
@@ -242,49 +223,38 @@ public class member_center extends AppCompatActivity {
                         cstmt.setString(8, PWDHINT);
                         cstmt.setString(9, WEB);
                         cstmt.setString(10,b64);
-
                         cstmt.executeUpdate();
                         return cstmt.getString(1);
                     }else{
                         return "您目前的密碼有誤\n如您忘記密碼，請聯絡客服人員";
                     }
-
-
-
                 }
-
-
             }catch (Exception e){
                 e.printStackTrace();
                 res = e.toString();
-
             }
             return res;
         }
-
+        //結果
         @Override
         protected void onPostExecute(String result) {
             Log.v("test","function (post) = "+function);
             Log.v("test", "error = "+result);
-            if(result.equals("更新成功")){
-                Toast.makeText(member_center.this, result, Toast.LENGTH_SHORT).show();
+            if(result.equals("更新成功")){//更新成功將自動返回首頁
+                popup(getApplicationContext(),result);
                 pf = dataToConvert;
                 Log.v("test","pf is null (ope)=" + (pf==null));
                 onBackPressed();
-            }else if(function == 0){
+            }else if(function == 0){//帶入資料時將自動填入其值
 //                data = result;
 //                Log.v("test","data = "+result);
                 autoFill();
-                function =1;
+                function =1;//設定功能為修改資料
             }else{
-                Toast.makeText(member_center.this, result, Toast.LENGTH_SHORT).show();
+                popup(getApplicationContext(),result);
                 Log.v("test","SQLexception = "+result);
             }
-
-
         }
-
-
     }
     //********************************************************************************************
     //開啟頭像
@@ -343,6 +313,7 @@ public class member_center extends AppCompatActivity {
         }
     }
 
+    //自動帶入舊資料
     public void autoFill(){
 //        String tmp[] = data.split(",");
 //        name.setText(vname);
@@ -359,6 +330,7 @@ public class member_center extends AppCompatActivity {
 
     }
 
+    //返回時將清空輸入框與擷取之資料然後返回首頁
     public void onBackPressed(){
         clear();
         Log.v("test","pf is null (obp)=" + (pf==null));
@@ -366,5 +338,5 @@ public class member_center extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    }
+}
 
