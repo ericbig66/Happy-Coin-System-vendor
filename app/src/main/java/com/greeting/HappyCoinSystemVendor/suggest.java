@@ -23,38 +23,40 @@ import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 import static com.greeting.HappyCoinSystemVendor.Login.ver;
 
-
 public class suggest extends AppCompatActivity {
-    EditText text ;
-    Button send;
+    EditText text ;//意見輸入框
+    Button send;//送出鈕
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layoyt_suggest);
+        //定義區
         text = findViewById(R.id.communication);
         send = findViewById(R.id.submit);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bag bag = new Bag();
-                bag.execute();
-            }
+        //設定區
+        //設定送出按鈕動作
+          //呼叫送出
+        send.setOnClickListener(v -> {
+            Bag bag = new Bag();
+            bag.execute();
         });
     }
 
+    //將意見送入資料庫
     private class Bag extends AsyncTask<Void,Void,String> {
         //        String ip = null;
 //        int sum = Integer.parseInt(How_much.getText().toString());
 //        public String uuid = getUUID(getApplicationContext());
-        String Catch;
-
+        String Catch;//意見裝載處
         @Override
+        //擷取輸入框文字
         protected void onPreExecute() {
             super.onPreExecute();
-            Catch = text.getText().toString();
+            Catch = text.getText().toString();//取得意見輸入框文字
         }
 
         @Override
+        //送出意見
         protected String doInBackground(Void... voids) {
             String res = null;
             try {
@@ -81,12 +83,14 @@ public class suggest extends AppCompatActivity {
         }
 
         @Override
+        //顯示送出結果
         protected void onPostExecute(String result) {
             popup(getApplicationContext(), result);
         }
     }
 
     @Override
+    //返回首頁
     public void onBackPressed() {
         Intent intent = new Intent(suggest.this,Home.class);
         startActivity(intent);

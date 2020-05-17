@@ -16,6 +16,7 @@ import com.greeting.HappyCoinSystemVendor.R;
 
 /**
  * A placeholder fragment containing a simple view.
+ * 子頁籤顯示框架，無須更動
  */
 public class PlaceholderFragment extends Fragment {
 

@@ -28,22 +28,20 @@ import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 /**
  * A simple {@link Fragment} subclass.
+ * 此檔案為diary之子檔(子頁籤)
  */
 public class SellDiary extends Fragment {
-    private ArrayList<String> pname  = new ArrayList<>();
-    private ArrayList<String> pprice  = new ArrayList<>();
-    private ArrayList<String> pamount = new ArrayList<>();
-    private ArrayList<String> total = new ArrayList<>();
-    private ArrayList<String> selldate = new ArrayList<>();
-
-
-    TextView dt;
-    TableLayout tradeData;
-    Spinner chooser;
+    private ArrayList<String> pname  = new ArrayList<>();   //品名
+    private ArrayList<String> pprice  = new ArrayList<>();  //單價
+    private ArrayList<String> pamount = new ArrayList<>();  //出售數量
+    private ArrayList<String> total = new ArrayList<>();    //交易金額
+    private ArrayList<String> selldate = new ArrayList<>(); //出售時間
+    TableLayout tradeData;//交易資料顯示處
+    Spinner chooser;//活動名稱選擇器(必須宣告，因為共用fragment)
     public SellDiary() {
         // Required empty public constructor
     }
-
+    //建立實體與主檔溝通用
     public static SellDiary newInstance(){
         return new SellDiary();
     }
@@ -141,9 +139,7 @@ public class SellDiary extends Fragment {
                     tr.addView(t5);
                     //將整列加入預先建立的TableLayout中
                     tradeData.addView(tr,new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
                 }
-
             }
         }
 
@@ -154,4 +150,4 @@ public class SellDiary extends Fragment {
             total.clear();
             selldate.clear();
         }
-    }
+}

@@ -29,35 +29,28 @@ import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 /**
  * A simple {@link Fragment} subclass.
+ * 此檔案為diary之子檔(子頁籤)
  */
 public class EventAttendList extends Fragment {
-    private ArrayList<String> Aname = new ArrayList<>();
-    private ArrayList<String> Mail = new ArrayList<>();
-    private ArrayList<String> Name = new ArrayList<>();
-    private ArrayList<String> Sign = new ArrayList<>();
-
-    private ArrayList<String> catagory = new ArrayList<>();
+    private ArrayList<String> Aname = new ArrayList<>();//活動名稱
+    private ArrayList<String> Mail = new ArrayList<>(); //客戶帳號***目前客戶尚不知道其UUID
+    private ArrayList<String> Name = new ArrayList<>(); //客戶姓名
+    private ArrayList<String> Sign = new ArrayList<>(); //簽到時間
+    private ArrayList<String> catagory = new ArrayList<>();//活動選擇器
+    Spinner chooser;//活動名稱選擇器
+    TableLayout tradeData;//交易資料顯示處
     public EventAttendList(){
         // Required empty public constructor
     }
-
+    //建立實體與主檔溝通用
     public static EventAttendList newInstance() {
         return new EventAttendList();
     }
-
-    Spinner chooser;
-    TableLayout tradeData;
-
-//    public EventAttendList() {
-//        // Required empty public constructor
-//    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         TextView textView = new TextView(getActivity());
-
         View view = inflater.inflate(R.layout.fragment_diary,container, false);
         clear();
         tradeData = view.findViewById(R.id.tradeData);
@@ -79,13 +72,10 @@ public class EventAttendList extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         return view;
-
     }
 
     //建立連接與查詢非同步作業
@@ -118,7 +108,6 @@ public class EventAttendList extends Fragment {
                     Sign.add(rs.getString(4));
                 }
 
-
                 Statement st2 = con.createStatement();
                 ResultSet rs2 = st2.executeQuery("select distinct actName from activity a, vendor v where v.vid = a.HostId and v.acc = '"+acc+"'");
                 while (rs2.next()){
@@ -139,7 +128,6 @@ public class EventAttendList extends Fragment {
             ArrayAdapter<String> actName= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, catagory);
             actName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             chooser.setAdapter(actName);
-
 //            Log.v("test","YOUR RESULT ="+result);
 //            renderTable();
         }
@@ -171,9 +159,7 @@ public class EventAttendList extends Fragment {
             tr.addView(t4);
             //將整列加入預先建立的TableLayout中
             tradeData.addView(tr,new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
         }
-
     }
 
     public void clear(){
@@ -183,6 +169,5 @@ public class EventAttendList extends Fragment {
         Sign.clear();
         catagory.clear();
     }
-
 }
 

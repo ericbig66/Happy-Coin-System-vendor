@@ -28,23 +28,19 @@ import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 /**
  * A simple {@link Fragment} subclass.
+ * 此檔案為diary之子檔(子頁籤)
  */
 public class RedEnvelopeDiary extends Fragment {
-    //連接資料庫的IP、帳號(不可用root)、密碼
-
-
-    private ArrayList<String> ioacc  = new ArrayList<>();
-    private ArrayList<String> trade  = new ArrayList<>();
-    private ArrayList<String> amount = new ArrayList<>();
-    private ArrayList<String> dealTime = new ArrayList<>();
-    Spinner chooser;
-    TextView dt;
-    TableLayout tradeData;
-
+    private ArrayList<String> ioacc  = new ArrayList<>();   //對方帳戶
+    private ArrayList<String> trade  = new ArrayList<>();   //交易方向
+    private ArrayList<String> amount = new ArrayList<>();   //交易金額
+    private ArrayList<String> dealTime = new ArrayList<>(); //交易時間
+    Spinner chooser; //活動名稱選擇器(必須宣告，因為共用fragment)
+    TableLayout tradeData;//交易資料顯示處
     public RedEnvelopeDiary() {
         // Required empty public constructor
     }
-
+    //建立實體與主檔溝通用
     public static RedEnvelopeDiary newInstance(){
         return new RedEnvelopeDiary();
     }
@@ -168,10 +164,7 @@ public class RedEnvelopeDiary extends Fragment {
                 tr.addView(t4);
                 //將整列加入預先建立的TableLayout中
                 tradeData.addView(tr,new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
             }
-
         }
     }
-
 }
