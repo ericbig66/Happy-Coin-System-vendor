@@ -52,19 +52,22 @@ public class EventAttendList extends Fragment {
                              Bundle savedInstanceState) {
         TextView textView = new TextView(getActivity());
         View view = inflater.inflate(R.layout.fragment_diary,container, false);
-        clear();
+        //定義區
         tradeData = view.findViewById(R.id.tradeData);
         chooser = view.findViewById(R.id.chooser);
         chooser.setVisibility(View.VISIBLE);
-
+        //設定區
+        clear();//清除陣列資料避免疊加
+          //新增表頭
         Aname.add("活動名稱　");
         Mail.add("客戶帳號　");
         Name.add("客戶姓名　");
         Sign.add("簽到時間");
-
+          //連接資料庫取得報名資料
         ConnectMySql connectMySql = new ConnectMySql();
         connectMySql.execute("");
 
+          //取得所選取的活動
         chooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -75,10 +78,10 @@ public class EventAttendList extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        return view;
+        return view;//繪製頁面
     }
 
-    //建立連接與查詢非同步作業
+    //取得報名資料
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";//錯誤信息儲存變數
         //開始執行動作
@@ -88,6 +91,7 @@ public class EventAttendList extends Fragment {
         }
         //查詢執行動作(不可使用與UI相關的指令)
         @Override
+        //取得資料
         protected String doInBackground(String... strings) {
             try {
                 //連接資料庫
@@ -107,13 +111,11 @@ public class EventAttendList extends Fragment {
                     Name.add(rs.getString(3)+"　");
                     Sign.add(rs.getString(4));
                 }
-
                 Statement st2 = con.createStatement();
                 ResultSet rs2 = st2.executeQuery("select distinct actName from activity a, vendor v where v.vid = a.HostId and v.acc = '"+acc+"'");
                 while (rs2.next()){
                     catagory.add(rs2.getString(1));
                 }
-
                 return "0";
             }catch (Exception e){
                 e.printStackTrace();
@@ -125,6 +127,7 @@ public class EventAttendList extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             Log.v("test","onpost execute: "+result);
+            //將取得的活動類別加入選單
             ArrayAdapter<String> actName= new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, catagory);
             actName.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             chooser.setAdapter(actName);
@@ -133,6 +136,7 @@ public class EventAttendList extends Fragment {
         }
     }
 
+    //繪製表格
     private void renderTable(int position){
         tradeData.removeAllViews();
         for(int row = 0 ; row < Aname.size() ; row++ ){
@@ -161,7 +165,7 @@ public class EventAttendList extends Fragment {
             tradeData.addView(tr,new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
-
+    //清除陣列資料避免活動報名資訊重複疊加
     public void clear(){
         Aname.clear();
         Mail.clear();

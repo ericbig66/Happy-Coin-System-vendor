@@ -53,34 +53,35 @@ public class SellDiary extends Fragment {
 //        TextView textView = new TextView(getActivity());
 //        textView.setText(R.string.hello_blank_fragment);
 //        return textView;
-        clear();
+
+        //定義區
         chooser = view.findViewById(R.id.chooser);
         chooser.setVisibility(View.GONE);
         tradeData = view.findViewById(R.id.tradeData);
+        //設定區
+        clear();//清除陣列資料避免疊加
+          //新增表頭
         pname.add("品名　　");
         pprice.add("單價　　");
         pamount.add("數量　　");
         total.add("總額　　");
         selldate.add("交易日期  &  時間");
+          //連接資料庫取得銷售紀錄
         SellDiary.ConnectMySql connectMySql = new SellDiary.ConnectMySql();
         connectMySql.execute("");
-        return view;
+        return view;//繪製頁面
     }
-        public void onBackPressed(){
-            Intent intent = new Intent(getActivity(), Home.class);
-            startActivity(intent);
-        }
 
-        //建立連接與查詢非同步作業
+        //取得銷售紀錄
         private class ConnectMySql extends AsyncTask<String, Void, String> {
             String res="";//錯誤信息儲存變數
-            //開始執行動作
+
             @Override
             protected void onPreExecute(){
                 super.onPreExecute();
 //            Toast.makeText(getActivity(),"請稍後...",Toast.LENGTH_SHORT).show();
             }
-            //查詢執行動作(不可使用與UI相關的指令)
+            //取得交易紀錄
             @Override
             protected String doInBackground(String... strings) {
                 try {
@@ -111,8 +112,10 @@ public class SellDiary extends Fragment {
             @Override
             protected void onPostExecute(String result) {
                 //dt.setText(result);
-                renderTable();
+                renderTable();//繪製表格
             }
+
+            //繪製表格
             private void renderTable(){
                 for(int row = 0 ; row < pname.size() ; row++ ){
 //                Toast.makeText(Diary.this,"第"+row+"列建構中",Toast.LENGTH_SHORT).show();
@@ -143,6 +146,7 @@ public class SellDiary extends Fragment {
             }
         }
 
+        //清除陣列資料避免商品出售資訊重複疊加
         public void clear(){
             pname.clear();
             pprice.clear();

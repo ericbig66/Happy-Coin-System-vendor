@@ -30,6 +30,7 @@ import static com.greeting.HappyCoinSystemVendor.Login.user;
  * A simple {@link Fragment} subclass.
  * 此檔案為diary之子檔(子頁籤)
  */
+
 public class RedEnvelopeDiary extends Fragment {
     private ArrayList<String> ioacc  = new ArrayList<>();   //對方帳戶
     private ArrayList<String> trade  = new ArrayList<>();   //交易方向
@@ -51,34 +52,34 @@ public class RedEnvelopeDiary extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_diary, container, false);
         Log.v("test","-------------------------------------------");
+        //定義區
         chooser = view.findViewById(R.id.chooser);
         chooser.setVisibility(View.GONE);
         tradeData = view.findViewById(R.id.tradeData);
+        //設定區
+        clear();//清除陣列資料避免疊加
+          //新增表頭
         ioacc.add("對方帳戶　　");
         trade.add("交易方向　　");
         amount.add("金額　　");
         dealTime.add("交易時間");
+          //連接資料庫取得紅包交易資料
         RedEnvelopeDiary.ConnectMySql connectMySql = new RedEnvelopeDiary.ConnectMySql();
         connectMySql.execute("");
-        return view;
+        return view;//繪製頁面
     }
 
-    public void onBackPressed(){
-        Intent intent = new Intent(getActivity(), Home.class);
-        startActivity(intent);
-    }
-
-    //建立連接與查詢非同步作業
+    //取得紅包交易資訊
     private class ConnectMySql extends AsyncTask<String, Void, String> {
         String res="";//錯誤信息儲存變數
-        //開始執行動作
+
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
             Log.v("test","Reading data please wait...");
 //            Toast.makeText(getActivity(),"請稍後...",Toast.LENGTH_SHORT).show();
         }
-        //查詢執行動作(不可使用與UI相關的指令)
+        //取得交易紀錄
         @Override
         protected String doInBackground(String... strings) {
             try {
@@ -139,8 +140,10 @@ public class RedEnvelopeDiary extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             //dt.setText(result);
-            renderTable();
+            renderTable();//繪製表格
         }
+
+        //繪製表格
         private void renderTable(){
             for(int row = 0 ; row < ioacc.size() ; row++ ){
 //                Toast.makeText(Diary.this,"第"+row+"列建構中",Toast.LENGTH_SHORT).show();
@@ -166,5 +169,13 @@ public class RedEnvelopeDiary extends Fragment {
                 tradeData.addView(tr,new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
         }
+    }
+
+    //清除陣列資料避免紅包交易資訊重複疊加
+    public void clear(){
+        ioacc.clear();
+        trade.clear();
+        amount.clear();
+        dealTime.clear();
     }
 }
