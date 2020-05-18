@@ -64,6 +64,7 @@ public class Home extends AppCompatActivity {
                 intent = new Intent(Home.this,alter_event.class);
                 break;
             case R.id.alter_vendor://會員中心
+            case R.id.profile:
                 intent = new Intent(Home.this,member_center.class);
                 break;
             case R.id.contact://聯絡我們
@@ -155,7 +156,6 @@ public class Home extends AppCompatActivity {
                 res = e.toString();
                 return res;
             }
-
         }
         //查詢後的結果將回傳於此
         @Override

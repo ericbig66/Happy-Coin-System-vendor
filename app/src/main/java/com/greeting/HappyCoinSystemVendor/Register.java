@@ -26,22 +26,27 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Types;
 
+import static com.greeting.HappyCoinSystemVendor.Login.hideKB;
 import static com.greeting.HappyCoinSystemVendor.Login.pass;
+import static com.greeting.HappyCoinSystemVendor.Login.popup;
 import static com.greeting.HappyCoinSystemVendor.Login.url;
 import static com.greeting.HappyCoinSystemVendor.Login.user;
 
 public class Register extends AppCompatActivity {
 
     static final int OPEN_PIC = 1021;
-
+    //輸入框==>公司名稱,帳號, 密碼, 確認密碼,密碼提示, e-mail,電話,地址,    往站
     EditText name, account, pwd, chkpwd, pwdhint, em, phone, address, website;
+    // 變更頭像, 註冊, 切至登入,清除,旋轉頭像==>旋轉尚未開發完成
     Button pic, reg, login, clr, rotate;
-    CircularImageView profile;
+    CircularImageView profile;//頭像顯示處
 
     //裝載轉換出的EditText中的文字
+    //     公司名稱, 帳號,        e-mail,密碼,     確認密碼,   密碼提示,    電話,   地址,   網站,    頭像base64
     String NAME="", ACCOUNT="", EM="", PWD = "", CHKPWD="", PWDHINT="", PH="", ADD="", WEB="", b64="";
-    Bitmap dataToConvert;
+    Bitmap dataToConvert;//裝載帶轉換的頭像
 
+    //清除功能
     public void clear(){
         name.setText("");
         account.setText("");
@@ -62,7 +67,7 @@ public class Register extends AppCompatActivity {
         ADD="";
         WEB="";
         b64="";
-        profile.setVisibility(View.GONE);
+        profile.setVisibility(View.GONE);//隱藏頭像區域
 //        rotate.setVisibility(View.GONE);
     }
     //切換回登入模式(被該按鈕呼叫)
@@ -71,14 +76,6 @@ public class Register extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //隱藏鍵盤
-    public void closekeybord() {
-        View view = this.getCurrentFocus();
-        if(view != null){
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
-        }
-    }
     //檢查填寫資料正確性(按下註冊鈕後呼叫)
     public void verify(){
         boolean haveError = false;
@@ -121,6 +118,7 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register);
+        //定義區
         name = findViewById(R.id.name);
         account = findViewById(R.id.account);
         em = findViewById(R.id.em);
@@ -134,19 +132,15 @@ public class Register extends AppCompatActivity {
         reg = findViewById(R.id.reg);
         login = findViewById(R.id.login);
         clr = findViewById(R.id.clr);
-
         profile = findViewById(R.id.profile);
-
         rotate = findViewById(R.id.rotate);
-
+        //設定區
 //        rotate.setOnClickListener(v -> rotate());
-
-        pic.setOnClickListener(v -> picOpen());
-
-        login.setOnClickListener(v -> swlogin());
-
-        reg.setOnClickListener(v -> {
-            closekeybord();
+        pic.setOnClickListener(v -> picOpen());//開啟頭像動作
+        login.setOnClickListener(v -> swlogin());//切換至登入頁面動作
+        reg.setOnClickListener(v -> {//註冊按鈕動作
+            hideKB(this);
+            //擷取輸入框資料
             NAME = name.getText().toString();
             EM = em.getText().toString();
             PH = phone.getText().toString();
@@ -156,30 +150,30 @@ public class Register extends AppCompatActivity {
             ADD = address.getText().toString();
             PWDHINT = pwdhint.getText().toString();
             WEB = website.getText().toString();
-            verify();
+            verify();//驗證資料
         });
-
-        clr.setOnClickListener(v -> clear());
+        clr.setOnClickListener(v -> clear());//清除按鈕動作
     }
-    Float degree = 0f;
+    Float degree = 0f;//頭像角度
+    //旋轉頭像
     public void rotate(){
         degree=(degree+90f)>=(360f)?0f:degree+90f;
         profile.setRotation(degree);
     }
 
+    //連線置資料庫註冊
     private class ConnectMySql extends AsyncTask<String, Void, String> {
-        String res="";
+        String res="";//裝載回傳訊息
 
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            Toast.makeText(Register.this,"註冊中...",Toast.LENGTH_SHORT).show();
+            popup(getApplicationContext(),"註冊中...");
         }
-
+        //註冊
         @Override
         protected String doInBackground(String... strings) {
             try{
-
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(url, user, pass);
                 String result ="";
@@ -196,29 +190,25 @@ public class Register extends AppCompatActivity {
                 cstmt.setString(10, b64);//profile picture+
                 cstmt.executeUpdate();
                 return cstmt.getString(1);
-
             }catch (Exception e){
                 e.printStackTrace();
                 res = e.toString();
-
             }
             return res;
         }
 
         @Override
+        //執行結果
         protected void onPostExecute(String result) {
-            Toast.makeText(Register.this, result, Toast.LENGTH_SHORT).show();
+            result = result.contains("failure")?"請檢查您的網路連線\n然後重新註冊":result;
+            popup(getApplicationContext(),result);
 //            Log.v("test", "error = "+result);
-            if(result.equals("註冊成功!")){
+            if(result.equals("註冊成功!")){//註冊成功將自動返回登入頁面
                 clear();
                 swlogin();
                 finish();
             }
-
-
         }
-
-
     }
     //********************************************************************************************
     //開啟頭像
@@ -243,8 +233,8 @@ public class Register extends AppCompatActivity {
             convertToBase64.execute("");
         }
     }
-    //將圖片編碼為base64
 
+    //將圖片編碼為base64
     private class ConvertToBase64 extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
@@ -263,7 +253,6 @@ public class Register extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-
             super.onPostExecute(s);
             b64 = s;
         }

@@ -26,6 +26,7 @@
             android:id="@+id/profile"
             android:layout_width="250dp"
             android:layout_height="250dp"
+            android:onClick="execute"
             android:visibility="visible"
             app:civ_border_color="#2CBCA3"
             app:civ_border_width="4dp"

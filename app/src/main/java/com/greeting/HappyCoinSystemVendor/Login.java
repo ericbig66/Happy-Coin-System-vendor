@@ -187,6 +187,7 @@ public class Login extends AppCompatActivity {
                 swmenu();//切換到主選單
             } else {//否則秀出錯誤訊息
                 Log.v("test","does not contain separator");
+                if(result.contains("failure")){result = "請檢查您的網路連線\n然後重新登入";}
                 popup(getApplicationContext(), result);
             }
         }
